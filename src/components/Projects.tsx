@@ -18,7 +18,7 @@ interface Project {
   demo_url?: string;
 }
 
-// NOVO: Dados contextualizados para o LPEC
+// NOVO: Dados contextualizados para o LAFI
 const featuredProjects: Project[] = [
   {
     title: "AI Reservoir Characterization",

@@ -3,12 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://TYeshua.github.io/LPECSITE",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
@@ -36,6 +38,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^7.1.10"
+    "vite": "^7.1.10",
+    "gh-pages": "^6.1.1"
   }
 }

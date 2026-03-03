@@ -64,7 +64,7 @@ const About: React.FC = () => {
         {/* Título e subtítulo */}
         <motion.div variants={itemVariants} className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6">
-            Sobre o LPEC
+            Sobre o LAFI
           </h2>
           <p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto">
             Integrando ciência de dados e geociências para desvendar os desafios do subsolo.

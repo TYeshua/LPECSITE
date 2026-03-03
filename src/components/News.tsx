@@ -22,7 +22,7 @@ interface NewsItem {
 }
 const news: NewsItem[] = [
     {
-        title: "LPEC publica artigo sobre modelagem de reservatórios com IA",
+        title: "LAFI publica artigo sobre modelagem de reservatórios com IA",
         excerpt: "Nosso novo algoritmo melhora a precisão da caracterização de reservatórios utilizando redes neurais convolucionais.",
         fullContent: "O estudo, publicado na revista Geophysics, detalha uma nova arquitetura de rede neural que consegue identificar fácies sedimentares com 95% de acurácia a partir de dados sísmicos. Esta inovação representa um salto significativo para a exploração de campos complexos, reduzindo incertezas e otimizando o posicionamento de poços.",
         date: "2025-10-15",
@@ -32,7 +32,7 @@ const news: NewsItem[] = [
     {
         title: "Nova colaboração com o Centro de Geociências da Petrobras",
         excerpt: "Firmamos uma parceria estratégica para o desenvolvimento de métodos geostatísticos avançados em ambientes offshore.",
-        fullContent: "A colaboração com o CGEO visa unir a expertise em petrofísica do LPEC com a modelagem geoestatística avançada do centro. O projeto foca na criação de modelos preditivos para propriedades de rochas em áreas com dados escassos, um desafio comum na indústria de óleo e gás. Esperamos publicar os primeiros resultados em meados de 2026, com foco em aplicações práticas.",
+        fullContent: "A colaboração com o CGEO visa unir a expertise em petrofísica do LAFI com a modelagem geoestatística avançada do centro. O projeto foca na criação de modelos preditivos para propriedades de rochas em áreas com dados escassos, um desafio comum na indústria de óleo e gás. Esperamos publicar os primeiros resultados em meados de 2026, com foco em aplicações práticas.",
         date: "2025-10-02",
         category: "Colaboração",
         image: "https://picsum.photos/800/600?random=2"
@@ -47,7 +47,7 @@ const news: NewsItem[] = [
     },
     {
         title: "Avanços na pesquisa de fluxo em meios porosos complexos",
-        excerpt: "Pesquisadores do LPEC anunciam um avanço significativo na simulação de fluxo multifásico em rochas carbonáticas naturalmente fraturadas.",
+        excerpt: "Pesquisadores do LAFI anunciam um avanço significativo na simulação de fluxo multifásico em rochas carbonáticas naturalmente fraturadas.",
         fullContent: "Nossa equipe desenvolveu um novo modelo numérico que permite simular com maior precisão o comportamento de fluidos em reservatórios complexos. Isso é crucial para otimizar a recuperação de óleo e gás em campos desafiadores, contribuindo para a eficiência e sustentabilidade da produção.",
         date: "2025-09-18",
         category: "Pesquisa",
@@ -169,7 +169,7 @@ const News = () => {
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6">
               Últimas Notícias
             </h2>
-            <p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto">Acompanhe as principais novidades, publicações e desenvolvimentos do LPEC.</p>
+            <p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto">Acompanhe as principais novidades, publicações e desenvolvimentos do LAFI.</p>
           </motion.div>
           
           <motion.div variants={itemVariants}>

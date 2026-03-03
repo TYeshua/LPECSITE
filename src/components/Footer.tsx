@@ -9,10 +9,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <img src="./lpec2.png" alt="LPEC Logo" className="h-12 w-12 object-contain" />
+              <img src="./lafi_logo.png" alt="LAFI Logo" className="h-12 w-12 object-contain" />
               <div>
-                <h3 className="text-xl font-bold text-orange-500">LPEC</h3>
-                <p className="text-xs text-zinc-400">Lab. Petrofísica Estatística e Computacional</p>
+                <h3 className="text-xl font-bold text-orange-500">LAFI</h3>
+                <p className="text-xs text-zinc-400">Laboratório de Física Industrial</p>
               </div>
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -29,8 +29,8 @@ export default function Footer() {
               </li>
               <li className="flex items-start space-x-3 text-zinc-400 text-sm">
                 <Mail className="flex-shrink-0 text-orange-500 mt-0.5" size={18} />
-                <a href="mailto:contato@lpec.ufrj.br" className="hover:text-orange-500 transition-colors duration-200">
-                  contato@lpec.ufrj.br
+                <a href="mailto:contato@lafi.ufrj.br" className="hover:text-orange-500 transition-colors duration-200">
+                  contato@lafi.ufrj.br
                 </a>
               </li>
               <li className="flex items-start space-x-3 text-zinc-400 text-sm">
@@ -44,7 +44,7 @@ export default function Footer() {
         {/* NOVO: Seção inferior com copyright e crédito ao desenvolvedor */}
         <div className="border-t border-orange-600/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-center sm:text-left text-zinc-500 text-sm">
-            © {currentYear} LPEC. Todos os direitos reservados.
+            © {currentYear} LAFI. Todos os direitos reservados.
           </p>
           <a 
   href="https://www.linkedin.com/in/thiagoyeshua/" 

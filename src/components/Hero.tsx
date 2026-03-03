@@ -104,12 +104,12 @@ const Hero: React.FC = () => {
           variants={itemVariants}
           className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter mb-6"
         >
-          <span className="block text-zinc-400 font-light">Laboratório de Petrofísica</span>
+          <span className="block text-zinc-400 font-light">Laboratório de</span>
           <span 
             className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent"
             style={{ textShadow: '0 2px 12px rgba(255, 109, 0, 0.4)' }} // Efeito de brilho (glow)
           >
-            Estatística e Computacional
+            Física Industrial
           </span>
         </motion.h1>
 

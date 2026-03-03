@@ -16,7 +16,7 @@ interface Publication {
   abstract: string;
 }
 
-// NOVO: Dados contextualizados para o LPEC
+// NOVO: Dados contextualizados para o LAFI
 const recentPublications: Publication[] = [
     { 
       title: "Deep Learning for Seismic Facies Classification in Pre-Salt Reservoirs", 

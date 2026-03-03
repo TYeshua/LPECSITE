@@ -67,11 +67,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-20">
           {/* LOGO ATUALIZADO */}
           <div className="flex items-center space-x-4 cursor-pointer" onClick={() => scrollToSection('home')}>
-            <img src="./lpec2.png" alt="LPEC Logo" className="h-12 w-12 object-contain" />
+            <img src="./lafi_logo.png" alt="LAFI Logo" className="h-12 w-12 object-contain" />
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">LPEC</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">LAFI</h1>
               <p className="text-xs text-zinc-500 hidden sm:block">
-                Laboratório de Petrofísica, Estatística e Computacional
+                Laboratório de Física Industrial
               </p>
             </div>
           </div>
