@@ -1,17 +1,15 @@
 // src/components/News.tsx
 
 import React, { useState, useCallback } from 'react';
-import { Calendar, ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { X, CalendarDays } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useKeenSlider } from 'keen-slider/react';
-import 'keen-slider/keen-slider.min.css';
-
-// NOVO: Importações para o background de partículas
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
 
-// --- Tipagem e Dados de Exemplo (Sem alterações) ---
+// Importe o seu novo componente
+import CardSwap, { Card } from './CardSwap';
+
 interface NewsItem {
   title: string;
   excerpt: string;
@@ -20,46 +18,44 @@ interface NewsItem {
   category: string;
   image: string;
 }
+
 const news: NewsItem[] = [
-    {
-        title: "LAFI publica artigo sobre modelagem de reservatórios com IA",
-        excerpt: "Nosso novo algoritmo melhora a precisão da caracterização de reservatórios utilizando redes neurais convolucionais.",
-        fullContent: "O estudo, publicado na revista Geophysics, detalha uma nova arquitetura de rede neural que consegue identificar fácies sedimentares com 95% de acurácia a partir de dados sísmicos. Esta inovação representa um salto significativo para a exploração de campos complexos, reduzindo incertezas e otimizando o posicionamento de poços.",
-        date: "2025-10-15",
-        category: "Publicações",
-        image: "https://picsum.photos/800/600?random=1",
-    },
-    {
-        title: "Nova colaboração com o Centro de Geociências da Petrobras",
-        excerpt: "Firmamos uma parceria estratégica para o desenvolvimento de métodos geostatísticos avançados em ambientes offshore.",
-        fullContent: "A colaboração com o CGEO visa unir a expertise em petrofísica do LAFI com a modelagem geoestatística avançada do centro. O projeto foca na criação de modelos preditivos para propriedades de rochas em áreas com dados escassos, um desafio comum na indústria de óleo e gás. Esperamos publicar os primeiros resultados em meados de 2026, com foco em aplicações práticas.",
-        date: "2025-10-02",
-        category: "Colaboração",
-        image: "https://picsum.photos/800/600?random=2"
-    },
-    {
-        title: "Workshop de Petrofísica Digital é um sucesso em Salvador",
-        excerpt: "Evento exclusivo reuniu especialistas para discutir as últimas tendências em análise de rochas digitais e machine learning.",
-        fullContent: "O workshop contou com a participação de mais de 80 profissionais da indústria e da academia, abordando tópicos como microtomografia de raios-X, simulação de fluxo em escala de poros e aplicação de inteligência artificial na interpretação de dados. O feedback foi extremamente positivo, e já planejamos a próxima edição.",
-        date: "2025-09-25",
-        category: "Eventos",
-        image: "https://picsum.photos/800/600?random=3"
-    },
-    {
-        title: "Avanços na pesquisa de fluxo em meios porosos complexos",
-        excerpt: "Pesquisadores do LAFI anunciam um avanço significativo na simulação de fluxo multifásico em rochas carbonáticas naturalmente fraturadas.",
-        fullContent: "Nossa equipe desenvolveu um novo modelo numérico que permite simular com maior precisão o comportamento de fluidos em reservatórios complexos. Isso é crucial para otimizar a recuperação de óleo e gás em campos desafiadores, contribuindo para a eficiência e sustentabilidade da produção.",
-        date: "2025-09-18",
-        category: "Pesquisa",
-        image: "https://picsum.photos/800/600?random=4"
-    },
+  {
+    title: "LAFI publica artigo sobre modelagem de reservatórios com IA",
+    excerpt: "Nosso novo algoritmo melhora a precisão da caracterização de reservatórios utilizando redes neurais convolucionais.",
+    fullContent: "O estudo, publicado na revista Geophysics, detalha uma nova arquitetura de rede neural que consegue identificar fácies sedimentares com 95% de acurácia a partir de dados sísmicos. Esta inovação representa um salto significativo para a exploração de campos complexos, reduzindo incertezas e otimizando o posicionamento de poços.",
+    date: "2025-10-15",
+    category: "Publicações",
+    image: "https://picsum.photos/800/600?random=1",
+  },
+  {
+    title: "Nova colaboração com o Centro de Geociências da Petrobras",
+    excerpt: "Firmamos uma parceria estratégica para o desenvolvimento de métodos geostatísticos avançados em ambientes offshore.",
+    fullContent: "A colaboração com o CGEO visa unir a expertise em petrofísica do LAFI com a modelagem geoestatística avançada do centro. O projeto foca na criação de modelos preditivos para propriedades de rochas em áreas com dados escassos, um desafio comum na indústria de óleo e gás. Esperamos publicar os primeiros resultados em meados de 2026, com foco em aplicações práticas.",
+    date: "2025-10-02",
+    category: "Colaboração",
+    image: "https://picsum.photos/800/600?random=2"
+  },
+  {
+    title: "Workshop de Petrofísica Digital é um sucesso em Salvador",
+    excerpt: "Evento exclusivo reuniu especialistas para discutir as últimas tendências em análise de rochas digitais e machine learning.",
+    fullContent: "O workshop contou com a participação de mais de 80 profissionais da indústria e da academia, abordando tópicos como microtomografia de raios-X, simulação de fluxo em escala de poros e aplicação de inteligência artificial na interpretação de dados. O feedback foi extremamente positivo, e já planejamos a próxima edição.",
+    date: "2025-09-25",
+    category: "Eventos",
+    image: "https://picsum.photos/800/600?random=3"
+  },
+  {
+    title: "Avanços na pesquisa de fluxo em meios porosos complexos",
+    excerpt: "Pesquisadores do LAFI anunciam um avanço significativo na simulação de fluxo multifásico em rochas carbonáticas.",
+    fullContent: "Nossa equipe desenvolveu um novo modelo numérico que permite simular com maior precisão o comportamento de fluidos em reservatórios complexos. Isso é crucial para otimizar a recuperação de óleo e gás em campos desafiadores, contribuindo para a eficiência e sustentabilidade da produção.",
+    date: "2025-09-18",
+    category: "Pesquisa",
+    image: "https://picsum.photos/800/600?random=4"
+  },
 ];
 
-// ==================================================================
-// COMPONENTES AUXILIARES (Sem alterações)
-// ==================================================================
 const CategoryPill: React.FC<{ category: string }> = ({ category }) => (
-  <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-950/50 text-orange-300 border-orange-500/30 transition-all hover:bg-orange-950/80 hover:border-orange-500/60">
+  <span className="px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border bg-[#ff6d00]/10 text-[#ff6d00] border-[#ff6d00]/20 shadow-[0_0_10px_rgba(255,109,0,0.1)]">
     {category}
   </span>
 );
@@ -67,136 +63,154 @@ const CategoryPill: React.FC<{ category: string }> = ({ category }) => (
 const NewsModal: React.FC<{ item: NewsItem | null; onClose: () => void }> = ({ item, onClose }) => (
   <AnimatePresence>
     {item && (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <motion.div initial={{ scale: 0.95, y: 20, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.95, y: 20, opacity: 0 }} transition={{ duration: 0.3, ease: 'easeInOut' }} onClick={(e) => e.stopPropagation()} drag="y" dragConstraints={{ top: 0, bottom: 200 }} onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }} className="relative bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-orange-500/10 cursor-default">
-          <img src={item.image} alt={item.title} className="w-full h-64 object-cover rounded-t-2xl" />
-          <div className="p-6 sm:p-8">
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }} 
+        onClick={onClose} 
+        className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100] p-4 sm:p-6"
+      >
+        <motion.div 
+          initial={{ scale: 0.95, y: 30, opacity: 0 }} 
+          animate={{ scale: 1, y: 0, opacity: 1 }} 
+          exit={{ scale: 0.95, y: 30, opacity: 0 }} 
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} 
+          onClick={(e) => e.stopPropagation()} 
+          // max-h-[90dvh] garante que não vaze no iOS/Android
+          className="relative bg-zinc-950 border border-white/10 rounded-2xl sm:rounded-3xl w-full max-w-3xl max-h-[90dvh] overflow-y-auto shadow-[0_0_50px_rgba(255,109,0,0.05)] custom-scrollbar"
+        >
+          <div className="relative w-full h-52 sm:h-80 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-transparent to-transparent z-10" />
+            <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+          </div>
+          
+          {/* Ajuste de padding no mobile para não espremer o texto */}
+          <div className="p-6 sm:p-12 relative z-20 -mt-12 sm:-mt-16">
+            <div className="flex items-center justify-start sm:justify-between mb-5 sm:mb-6 flex-wrap gap-3 sm:gap-4">
               <CategoryPill category={item.category} />
-              <div className="flex items-center text-zinc-400 text-sm">
-                <Calendar className="w-4 h-4 mr-1.5 text-orange-500/70" />
-                {new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' })}
+              <div className="flex items-center gap-2 text-zinc-400 text-xs sm:text-sm font-medium bg-black px-3 py-1.5 rounded-full border border-white/5">
+                <CalendarDays size={16} className="text-[#ff6d00]" />
+                {new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' })}
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-orange-400 mb-4">{item.title}</h3>
-            <p className="text-zinc-300 leading-relaxed sm:leading-loose whitespace-pre-line">{item.fullContent}</p>
+            {/* Responsividade na tipografia do título do modal */}
+            <h3 className="text-2xl sm:text-4xl font-extrabold text-white mb-4 sm:mb-6 leading-tight">{item.title}</h3>
+            <p className="text-zinc-300 leading-relaxed font-light whitespace-pre-line text-base sm:text-lg">{item.fullContent}</p>
           </div>
-          <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-black/30 text-white hover:bg-orange-500 transition-colors border border-white/10 backdrop-blur-sm"><X size={20} /></button>
+          
+          <button 
+            onClick={onClose} 
+            aria-label="Fechar modal"
+            // Posição ajustada no mobile para não cortar
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 p-2 sm:p-2.5 rounded-full bg-black/50 backdrop-blur-md sm:bg-black text-white hover:bg-[#ff6d00] hover:text-white transition-all duration-300 border border-white/10 hover:border-[#ff6d00] hover:scale-110"
+          >
+            <X size={20} strokeWidth={2} />
+          </button>
         </motion.div>
       </motion.div>
     )}
   </AnimatePresence>
 );
 
-const NewsCard: React.FC<{ item: NewsItem; onOpen: () => void }> = ({ item, onOpen }) => {
-  const formattedDate = new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });
-  return (
-    <div className="keen-slider__slide h-full flex flex-col">
-      <button onClick={onOpen} className="group w-full text-left bg-zinc-900/60 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:border-orange-500/50 hover:shadow-orange-500/20 hover:-translate-y-1 h-full flex flex-col">
-        <div className="h-48 overflow-hidden">
-          <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" />
-        </div>
-        <div className="p-6 flex flex-col flex-grow">
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <CategoryPill category={item.category} />
-            <div className="flex items-center text-zinc-400 text-sm"><Calendar className="w-4 h-4 mr-1.5 text-orange-500/70" />{formattedDate}</div>
-          </div>
-          <div className="flex-grow border-l-2 border-orange-500/30 group-hover:border-orange-500/80 pl-4 transition-colors duration-300 flex flex-col">
-            <h4 className="text-xl font-bold text-white mb-3 leading-tight group-hover:text-orange-400 transition-colors flex-grow">{item.title}</h4>
-            <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3">{item.excerpt}</p>
-          </div>
-          <div className="mt-6 text-orange-400 group-hover:text-orange-300 transition-colors duration-200 flex items-center space-x-2 font-semibold text-sm">
-            <span>Ler mais</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-          </div>
-        </div>
-      </button>
-    </div>
-  );
-};
-
-// ==================================================================
-// COMPONENTE PRINCIPAL (COM NOVO BACKGROUND)
-// ==================================================================
 const News = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [loaded, setLoaded] = useState(false);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
 
-  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-    loop: news.length > 3,
-    mode: "snap",
-    breakpoints: {
-      "(min-width: 640px)": { slides: { perView: 2, spacing: 20 } },
-      "(min-width: 1024px)": { slides: { perView: 3, spacing: 30 } },
-      "(min-width: 1536px)": { slides: { perView: 3, spacing: 40 } },
-    },
-    slides: { perView: 1.2, spacing: 15 },
-    slideChanged(slider) { setCurrentSlide(slider.track.details.rel); },
-    created() { setLoaded(true); },
-  });
-
-  // NOVO: Configuração das partículas
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine);
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: 'transparent' } }, fpsLimit: 120, interactivity: { events: { onHover: { enable: true, mode: 'repulse' }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } }, particles: { color: { value: '#ff6d00' }, links: { color: '#ff9b57', distance: 150, enable: true, opacity: 0.2, width: 1 }, collisions: { enable: true }, move: { direction: 'none' as const, enable: true, outModes: { default: 'bounce' as const }, random: false, speed: 0.5, straight: false }, number: { density: { enable: true, area: 800 }, value: 80 }, opacity: { value: 0.3 }, shape: { type: 'circle' as const }, size: { value: { min: 1, max: 5 } } }, detectRetina: true
+    background: { color: { value: 'transparent' } }, 
+    fpsLimit: 45, 
+    interactivity: { events: { onHover: { enable: true, mode: 'repulse' }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } }, 
+    particles: { color: { value: '#ff6d00' }, links: { color: '#ff6d00', distance: 150, enable: true, opacity: 0.75, width: 1 }, collisions: { enable: true }, move: { direction: 'none' as const, enable: true, outModes: { default: 'bounce' as const }, random: false, speed: 0.3, straight: false }, number: { density: { enable: true, area: 800 }, value: 45 }, opacity: { value: 0.9 }, shape: { type: 'circle' as const }, size: { value: { min: 1, max: 3 } } }, 
+    detectRetina: true
   };
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeInOut" } } };
+  const itemVariants = { 
+    hidden: { y: 30, opacity: 0 }, 
+    visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } 
+  };
 
   return (
     <>
-      <section id="news" className="py-24 sm:py-32 bg-zinc-950 text-white relative overflow-hidden">
-        {/* NOVO: Camadas de Background do Hero */}
-        <Particles
-          id="tsparticles-news" // ID diferente para evitar conflitos
-          init={particlesInit}
-          options={particlesOptions}
-          className="absolute inset-0 z-0"
-        />
-        <div 
-          className="absolute inset-0 z-1 bg-black"
-        />
-        <div className="absolute inset-0 bg-black" />
+      {/* Trocado para min-h-[100dvh] e pt-24 para respiro sob a navbar no mobile */}
+      <section id="news" className="relative w-full min-h-[100dvh] flex flex-col justify-center pt-24 pb-12 lg:py-16 text-white overflow-hidden">
         
-        {/* Conteúdo da Seção de Notícias */}
-        <motion.div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={containerVariants}>
-          <motion.div className="text-center mb-16" variants={itemVariants}>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6">
-              Últimas Notícias
-            </h2>
-            <p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto">Acompanhe as principais novidades, publicações e desenvolvimentos do LAFI.</p>
+        <Particles id="tsparticles-news" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 opacity-40 pointer-events-none" />
+        
+        <motion.div 
+          className="max-w-7xl mx-auto px-6 sm:px-8 w-full relative z-10 grid grid-cols-1 lg:[grid-template-columns:1fr_2fr] gap-4 lg:gap-12 items-center" 
+          initial="hidden" 
+          whileInView="visible" 
+          viewport={{ once: true, amount: 0.2 }} 
+          variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
+        >
+          {/* Coluna esquerda: textos - Alinhado ao centro no mobile e à esquerda no PC */}
+          <motion.div variants={itemVariants} className="flex flex-col justify-center items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0">
+            <h2 className="text-sm sm:text-base font-semibold tracking-widest text-zinc-500 uppercase mb-3">Atualizações</h2>
+            <h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 sm:mb-6">
+              Últimas <span className="bg-gradient-to-r from-[#ff6d00] to-orange-400 bg-clip-text text-transparent">Notícias</span>
+            </h3>
+            <p className="text-zinc-400 text-base leading-relaxed max-w-md mx-auto lg:mx-0">
+              Acompanhe as pesquisas, eventos e colaborações mais recentes do laboratório.
+            </p>
           </motion.div>
-          
-          <motion.div variants={itemVariants}>
-            <div ref={sliderRef} className="keen-slider">
-              {news.map((item, index) => (
-                <NewsCard key={index} item={item} onOpen={() => setSelectedNews(item)} />
-              ))}
+
+          {/* Coluna direita: CardSwap */}
+          <motion.div variants={itemVariants} className="flex justify-center items-center w-full">
+            {/* Altura adaptativa: h-[450px] no mobile para não deixar um vácuo, h-[660px] no PC */}
+            <div className="relative w-full h-[450px] sm:h-[550px] lg:h-[660px] flex items-center justify-center">
+              <CardSwap
+                width={470}
+                height={570}
+                cardDistance={35}
+                verticalDistance={45}
+                delay={4000}
+                pauseOnHover={true}
+                easing="elastic"
+              >
+                {news.map((item, index) => (
+                  <Card 
+                    key={index} 
+                    className="overflow-hidden bg-zinc-900 border border-white/10 shadow-2xl rounded-2xl group cursor-pointer transition-all hover:bg-zinc-800 hover:border-[#ff6d00]/50"
+                    onClick={() => setSelectedNews(item)}
+                  >
+                    <div className="h-40 sm:h-44 overflow-hidden relative border-b border-white/5">
+                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-90 z-10" />
+                      <img 
+                        src={item.image} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                      />
+                      <div className="absolute top-4 left-4 z-20">
+                         <span className="px-3 py-1 bg-black border border-white/10 rounded-full text-[#ff6d00] text-xs font-bold tracking-wider uppercase">
+                           {item.category}
+                         </span>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 sm:p-5 flex flex-col flex-grow bg-transparent">
+                      <div className="flex items-center gap-2 text-zinc-400 text-[11px] sm:text-xs font-medium mb-2 sm:mb-3">
+                        <CalendarDays size={14} className="text-zinc-500" />
+                        {new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                      </div>
+                      <h4 className="text-base sm:text-lg font-bold text-white mb-2 leading-snug group-hover:text-[#ff6d00] transition-colors duration-300 line-clamp-2">
+                        {item.title}
+                      </h4>
+                      <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed font-light line-clamp-3">
+                        {item.excerpt}
+                      </p>
+                    </div>
+                  </Card>
+                ))}
+              </CardSwap>
             </div>
           </motion.div>
 
-          {loaded && instanceRef.current && (
-            <motion.div className="flex items-center justify-center gap-6 mt-12" variants={itemVariants}>
-              <button aria-label="Notícia Anterior" onClick={(e) => { e.stopPropagation(); instanceRef.current?.prev(); }} className="p-3 rounded-full bg-zinc-800/60 text-orange-400 hover:text-white transition-all duration-200 border border-white/10 hover:border-orange-500/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-40 disabled:cursor-not-allowed" disabled={!instanceRef.current.options.loop && currentSlide === 0}>
-                <ArrowLeft className="w-6 h-6" />
-              </button>
-              <div className="flex items-center justify-center gap-3">
-                {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => (
-                  <button key={idx} aria-label={`Ir para a notícia ${idx + 1}`} onClick={() => { instanceRef.current?.moveToIdx(idx); }} className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-5 bg-orange-500' : 'bg-zinc-700 hover:bg-zinc-500'}`}></button>
-                ))}
-              </div>
-              <button aria-label="Próxima Notícia" onClick={(e) => { e.stopPropagation(); instanceRef.current?.next(); }} className="p-3 rounded-full bg-zinc-800/60 text-orange-400 hover:text-white transition-all duration-200 border border-white/10 hover:border-orange-500/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-40 disabled:cursor-not-allowed" disabled={!instanceRef.current.options.loop && currentSlide === instanceRef.current.track.details.slides.length - 1}>
-                <ArrowRight className="w-6 h-6" />
-              </button>
-            </motion.div>
-          )}
         </motion.div>
       </section>
+      
       <NewsModal item={selectedNews} onClose={() => setSelectedNews(null)} />
     </>
   );

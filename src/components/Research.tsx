@@ -1,8 +1,15 @@
 // src/pages/Research.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, Scan, Waves, Signal, Cpu, Scaling, X } from 'lucide-react'; // Ícones relevantes para Geociências
+import { Layers, Scan, Waves, Signal, Cpu, Scaling, X } from 'lucide-react';
+
+// Importações para o background de partículas
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
+import type { Engine } from "tsparticles-engine";
+
+import { Marquee } from "@/components/ui/marquee";
 
 // --- Tipagem dos Dados ---
 interface ResearchLine {
@@ -10,69 +17,67 @@ interface ResearchLine {
   title: string;
   description: string;
   detailedDescription: string;
-  projects: number;
 }
 
-// --- DADOS ADAPTADOS PARA O CONTEXTO DE GEOCIÊNCIAS/PETROFÍSICA ---
+// --- DADOS ---
 const researchLines: ResearchLine[] = [
   {
-    icon: <Layers size={28} />,
-    title: "Modelagem de Reservatórios",
-    description: "Integração de dados geológicos, geofísicos e de engenharia para criar modelos 3D precisos.",
-    detailedDescription: "Esta linha foca na construção de modelos estáticos e dinâmicos de reservatórios de petróleo. Utilizamos técnicas avançadas de geoestatística e modelagem estocástica para caracterizar a heterogeneidade das rochas, prever a distribuição de fluidos e otimizar estratégias de produção.",
-    projects: 18,
+    icon: <Layers size={32} strokeWidth={1.5} />,
+    title: "Filosofia da Linguagem e Modelagem Matemática na Formação Docente",
+    description: "Investigação dos processos de ensino-aprendizagem de matemática através da filosofia da linguagem, focando na formação de docentes e no uso da modelagem para abordar sustentabilidade e cultura.",
+    detailedDescription: "A pesquisa utiliza o referencial teórico da filosofia da linguagem de Ludwig Wittgenstein para analisar a matemática como um sistema de regras e usos práticos (jogos de linguagem). O foco está em como professores em formação podem utilizar a Modelagem Matemática não apenas como ferramenta de cálculo, mas como um método para interpretar e intervir em realidades complexas. O trabalho explora a conexão entre a matemática escolar e temas transversais, como a Educação Ambiental, a Sustentabilidade e a Etnomatemática, buscando desenvolver práticas pedagógicas que tornem o ensino de exatas mais humano, crítico e adaptado à diversidade cultural e linguística dos alunos.",
   },
   {
-    icon: <Cpu size={28} />,
-    title: "IA em Geociências",
-    description: "Aplicação de machine learning para acelerar a interpretação de dados e reduzir incertezas.",
-    detailedDescription: "Desenvolvemos e aplicamos algoritmos de inteligência artificial para solucionar problemas complexos em geociências. Nossas pesquisas incluem a classificação de fácies sísmicas com redes neurais convolucionais, a previsão de propriedades de rochas a partir de perfis de poço e a otimização de produção com aprendizado por reforço.",
-    projects: 15,
+    icon: <Cpu size={32} strokeWidth={1.5} />,
+    title: "Inteligência Computacional Aplicada a Ambientes de Aprendizagem e Ciência de Dados.",
+    description: "Desenvolvimento de sistemas inteligentes utilizando Machine Learning e Processamento de Linguagem Natural para análise de dados educacionais, mineração de dados e inovação tecnológica.",
+    detailedDescription: "A pesquisa foca no uso de algoritmos avançados de Deep Learning e Machine Learning para extrair conhecimento de grandes volumes de dados (Data Mining). O trabalho destaca-se na área de Learning Analytics e Educational Data Mining, onde o objetivo é criar Ambientes Inteligentes de Aprendizagem que entendam e prevejam o comportamento do estudante. Além disso, o pesquisador aplica Processamento de Linguagem Natural (PLN) para automatizar a compreensão de textos e apoiar a transferência de tecnologia e a propriedade intelectual, conectando a computação pura às necessidades práticas de inovação e gestão de projetos.",
   },
   {
-    icon: <Scan size={28} />,
-    title: "Petrofísica Digital",
-    description: "Análise de imagens de microtomografia (μCT) para entender o comportamento das rochas.",
-    detailedDescription: "Através da análise de imagens 3D de alta resolução, criamos 'gêmeos digitais' de amostras de rocha. Isso nos permite simular propriedades como porosidade, permeabilidade e condutividade elétrica em escala de poros, validando e aprimorando modelos petrofísicos tradicionais.",
-    projects: 12,
+    icon: <Scan size={32} strokeWidth={1.5} />,
+    title: "Análise Inteligente e Mineração de Dados Petrofísicos de Bacias Petrolíferas Brasileiras.",
+    description: "Implementação de um pipeline de Ciência de Dados para processar, modelar e visualizar dados públicos da ANP, visando a extração de insights e otimização da produção de hidrocarbonetos.",
+    detailedDescription: "O projeto adota a metodologia clássica de Ciência de Dados dividida em seis etapas: definição do problema, coleta, pré-processamento (limpeza), análise exploratória, modelagem e comunicação. A base científica fundamenta-se nos 5 Vs do Big Data (Volume, Velocidade, Variedade, Veracidade e Valor). Tecnicamente, o trabalho envolve a mineração de dados petrofísicos complexos para identificar padrões de comportamento em bacias terrestres. O desenvolvimento utiliza o Power BI para a criação de Dashboards dinâmicos e modelos de Business Intelligence que permitem a interpretação célere de dados de produção, facilitando a gestão do conhecimento e a eficiência operacional no setor de óleo e gás.",
   },
   {
-    icon: <Waves size={28} />,
-    title: "Simulação de Fluxo",
-    description: "Modelagem numérica do movimento de fluidos (óleo, gás, água) em meios porosos.",
-    detailedDescription: "Nossa pesquisa se concentra no desenvolvimento e aplicação de simuladores de fluxo multifásico para prever o comportamento de reservatórios ao longo do tempo. Exploramos métodos numéricos eficientes para lidar com geometrias complexas e fenômenos físicos como o fluxo em rochas naturalmente fraturadas.",
-    projects: 10,
+    icon: <Waves size={32} strokeWidth={1.5} />,
+    title: "Estudo computacional da histerese térmica e transições de fase em sistemas de spin via Estatística de Kaniadakis",
+    description: "O projeto investiga fenômenos magnéticos complexos através de uma abordagem de física teórica-computacional avançada. O foco está na superação das limitações da estatística convencional (Boltzmann-Gibbs) ao lidar com sistemas que não seguem distribuições padrão, como nanoestruturas e materiais desordenados. Utilizando a Estatística de Kaniadakis ($\kappa$-estatística), o estudo busca modelar como deformações na distribuição de energia afetam a estabilidade e a memória magnética (histerese) de sistemas de spin em redes bidimensionais.",
+    detailedDescription: "A histerese térmica é fundamental no estudo de transições de fase magnéticas, mas em sistemas complexos e não-extensivos, a estatística de Boltzmann-Gibbs mostra-se insuficiente, exigindo abordagens generalizadas como a estatística de Kaniadakis (kappa-estatística). O uso dessa teoria justifica-se porque materiais reais, como nanoestruturas, frequentemente exibem distribuições de energia em lei de potência (power-law), que a deformação kappa captura naturalmente. Sendo assim, este projeto tem o objetivo de analisar computacionalmente a histerese térmica em um modelo de Ising 2D, focando em quantificar a influência do parâmetro kappa na temperatura crítica (T_c) e na área do laço de histerese. Para isso, a metodologia baseia-se em simulações de Monte Carlo via algoritmo de Metropolis adaptado, onde o fator de Boltzmann é substituído pela probabilidade kappa-exponencial exp kappa(x). A partir da simulação de ciclos de aquecimento e resfriamento, serão extraídas grandezas macroscópicas fundamentais, como magnetização, susceptibilidade, energia e cumulante de Binder. Como conclusão e finalidade computacional, o estudo mapeará como a deformação estatística expande ou contrai as zonas de metaestabilidade, fornecendo um modelo preditivo robusto e preciso para descrever materiais magnéticos desordenados.",
   },
   {
-    icon: <Signal size={28} />,
-    title: "Geofísica Computacional",
-    description: "Processamento e inversão de dados sísmicos para mapear o subsolo.",
-    detailedDescription: "Trabalhamos com o desenvolvimento de algoritmos para melhorar a qualidade das imagens sísmicas e extrair quantitativamente as propriedades elásticas das rochas a partir desses dados. A pesquisa inclui inversão sísmica, migração e imageamento de alta resolução.",
-    projects: 9,
+    icon: <Signal size={32} strokeWidth={1.5} />,
+    title: "Desenvolvimento de Objetos de Aprendizagem Digitais e Gamificação aplicados à Mecânica Clássica",
+    description: "Criação e validação de jogos e simulações computacionais para o ensino de Leis de Newton e cinemática, visando a transição da memorização para a compreensão conceitual profunda.",
+    detailedDescription: "A pesquisa utiliza princípios de Game Design e lógica de programação para modelar fenômenos físicos (como Movimento Retilíneo Uniforme e Variado) em ambientes virtuais. O foco técnico está na tradução de modelos matemáticos em motores de simulação onde o usuário pode alterar variáveis em tempo real e observar os resultados imediatos. A metodologia adota uma abordagem quali-quantitativa, estruturando sequências didáticas que colocam o estudante no centro do processo (protagonismo). O objetivo final é combater a 'aprendizagem mecânica' (decoreba), promovendo uma compreensão intuitiva e concreta das forças e movimentos através da interatividade e de experimentos virtuais que seriam difíceis de reproduzir em laboratórios físicos convencionais.",
   },
   {
-    icon: <Scaling size={28} />,
+    icon: <Scaling size={32} strokeWidth={1.5} />,
     title: "Geomecânica de Reservatórios",
     description: "Análise da estabilidade de poços e o comportamento mecânico das rochas.",
     detailedDescription: "Esta linha investiga a interação entre as tensões da terra e as operações de perfuração e produção. O objetivo é prever e prevenir problemas como o colapso de poços, otimizar a fratura hidráulica e entender fenômenos como a compactação do reservatório e a subsidência de superfície.",
-    projects: 7,
   }
 ];
 
-// --- COMPONENTE DO MODAL (REESTILIZADO) ---
+// --- COMPONENTE DO MODAL ---
 const Modal = ({ line, onClose }: { line: ResearchLine, onClose: () => void }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6" role="dialog" aria-modal="true">
       <motion.div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/90 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -80,85 +85,143 @@ const Modal = ({ line, onClose }: { line: ResearchLine, onClose: () => void }) =
       />
 
       <motion.div
-        className="relative z-10 w-full max-w-2xl bg-zinc-900 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-orange-500/10"
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        // Ajuste Crítico: max-h-[90dvh] e overflow-y-auto adicionados para garantir rolagem no mobile.
+        // Padding reduzido no mobile (p-6) para economizar espaço de leitura.
+        className="relative z-10 w-full max-w-2xl bg-zinc-950 border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-[0_0_50px_rgba(255,109,0,0.05)] max-h-[90dvh] overflow-y-auto custom-scrollbar"
+        initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 200 }}
-        onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }}
+        exit={{ opacity: 0, scale: 0.95, y: 30 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-zinc-800/60 text-white hover:bg-orange-500 transition-colors border border-white/10">
-          <X size={20} />
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff6d00]/50 to-transparent" />
+
+        <button 
+          onClick={onClose} 
+          // Ajuste: Botão de fechar reposicionado para não colidir com a borda no celular
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 sm:p-2.5 rounded-full bg-zinc-900/80 sm:bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] hover:scale-110 transition-all duration-300 border border-white/5 hover:border-[#ff6d00]"
+        >
+          <X size={20} strokeWidth={2} />
         </button>
 
-        <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
-          <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center text-orange-400 bg-orange-950/80 border border-orange-500/30">
+        {/* Ajuste: Espaçamentos (gap e mt) otimizados para fluir melhor ao empilhar */}
+        <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6 sm:mb-8 mt-6 sm:mt-2">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex-shrink-0 flex items-center justify-center text-[#ff6d00] bg-gradient-to-br from-[#ff6d00]/20 to-[#ff6d00]/5 border border-[#ff6d00]/30 shadow-[0_0_15px_rgba(255,109,0,0.15)]">
             {line.icon}
           </div>
           <div>
-            <h3 className="text-3xl font-bold text-white">{line.title}</h3>
-            <span className="font-semibold text-orange-400">{line.projects} projetos ativos</span>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 sm:mb-2 leading-tight pr-6 sm:pr-0">{line.title}</h3>
           </div>
         </div>
-        <p className="text-zinc-300 leading-relaxed">{line.detailedDescription}</p>
+        
+        <p className="text-zinc-300 text-base sm:text-lg leading-relaxed font-light">
+          {line.detailedDescription}
+        </p>
       </motion.div>
     </div>
   );
 };
 
-// --- COMPONENTE PRINCIPAL (REESTILIZADO) ---
+function ResearchCard({ item, onClick }: { item: ResearchLine; onClick: () => void }) {
+  return (
+    <div 
+      onClick={onClick}
+      // Ajuste Crítico: w-[18rem] garante que caiba em qualquer celular, w-[22rem] volta para o PC. 
+      // mx-2 e p-5 no mobile economizam espaço lateral.
+      className="group relative flex h-full min-h-[14rem] w-[18rem] sm:w-[22rem] cursor-pointer flex-col items-start justify-between rounded-2xl border border-white/10 bg-zinc-950 p-5 sm:p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] transition-all hover:border-[#ff6d00]/50 hover:bg-zinc-900 mx-2 sm:mx-3 overflow-hidden"
+    >
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:via-[#ff6d00]/60 transition-all duration-500" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-[#ff6d00]/20 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+      <div className="mb-4 text-xs sm:text-sm text-zinc-400 font-light leading-relaxed relative z-10 line-clamp-4">
+        {item.description}
+      </div>
+      
+      <div className="mt-auto flex items-center gap-3 sm:gap-4 w-full border-t border-white/5 pt-4 relative z-10">
+        <div className="relative h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0 flex items-center justify-center text-[#ff6d00] bg-[#ff6d00]/10 border border-[#ff6d00]/30 rounded-xl shadow-[0_0_15px_rgba(255,109,0,0.1)] group-hover:bg-[#ff6d00]/20 transition-colors">
+          {item.icon}
+        </div>
+        <div className="flex flex-col">
+          <div className="text-sm sm:text-base font-bold text-white tracking-tight group-hover:text-[#ff6d00] transition-colors line-clamp-1">
+            {item.title}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function MarqueeResearch({ onSelectLine }: { onSelectLine: (line: ResearchLine) => void }) {
+  return (
+    <div className="relative w-full max-w-[1400px] mx-auto overflow-hidden">
+      {/* Ajuste: Redução drástica da máscara de gradiente no mobile (w-8) para não esconder as pontas dos cards */}
+      <div className="from-black absolute inset-y-0 left-0 z-10 w-8 sm:w-32 bg-gradient-to-r to-transparent pointer-events-none" />
+      <div className="from-black absolute inset-y-0 right-0 z-10 w-8 sm:w-32 bg-gradient-to-l to-transparent pointer-events-none" />
+      <Marquee className="py-4" direction="left">
+        {[...researchLines, ...researchLines].map((item, index) => (
+          <ResearchCard key={index} item={item} onClick={() => onSelectLine(item)} />
+        ))}
+      </Marquee>
+      <Marquee className="py-4 mt-2" direction="right">
+        {[...researchLines, ...researchLines].map((item, index) => (
+          <ResearchCard key={`reverse-${index}`} item={item} onClick={() => onSelectLine(item)} />
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+
+// --- COMPONENTE PRINCIPAL ---
 const Research = () => {
   const [selectedLine, setSelectedLine] = useState<ResearchLine | null>(null);
 
-  return (
-    <section id="research" className="py-24 sm:py-32 bg-zinc-950 text-white relative overflow-hidden">
-      <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
-        <div className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-10" />
-      </div>
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_farthest-side_at_50%_100%,rgba(255,109,0,0.1),transparent)]" />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6">
-            Linhas de Pesquisa
-          </h2>
-          <p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto">
-            Clique em uma área para explorar em detalhes nossas frentes de inovação em geociências e computação.
-          </p>
-        </motion.div>
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
+  }, []);
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {researchLines.map((line, index) => (
-            <motion.button
-              key={line.title}
-              onClick={() => setSelectedLine(line)}
-              className="text-left group bg-zinc-900/70 backdrop-blur-sm p-6 rounded-xl border border-orange-600/20 transition-all duration-300 hover:border-orange-500/80 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.05 }}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-14 h-14 rounded-lg flex items-center justify-center text-orange-400 bg-orange-950/80 border border-orange-500/30 transition-transform duration-300 group-hover:scale-110">
-                  {line.icon}
-                </div>
-                <span className="text-sm font-semibold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">
-                  {line.projects} projetos
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors">{line.title}</h3>
-              <p className="text-zinc-400 text-sm leading-relaxed">{line.description}</p>
-            </motion.button>
-          ))}
-        </div>
+  const particlesOptions = useMemo(() => ({
+    background: { color: { value: 'transparent' } }, 
+    fpsLimit: 45, 
+    interactivity: { 
+        events: { onHover: { enable: true, mode: 'repulse' }, resize: true }, 
+        modes: { repulse: { distance: 120, duration: 0.4 } } 
+    }, 
+    particles: { 
+        color: { value: '#ff6d00' }, 
+        links: { color: '#ff6d00', distance: 150, enable: true, opacity: 0.6, width: 1 }, 
+        collisions: { enable: true }, 
+        move: { direction: 'none' as const, enable: true, outModes: { default: 'bounce' as const }, random: false, speed: 0.3, straight: false }, 
+        number: { density: { enable: true, area: 800 }, value: 40 }, 
+        opacity: { value: 0.8 }, 
+        shape: { type: 'circle' as const }, 
+        size: { value: { min: 1, max: 3 } } 
+    }, 
+    detectRetina: true
+  }), []);
+
+  return (
+    <section id="research" className="relative w-full text-white overflow-hidden py-24 lg:py-32">
+      
+      {/* Camada de Partículas preenchendo a seção toda */}
+      <Particles
+        id="tsparticles-research"
+        init={particlesInit}
+        options={particlesOptions}
+        className="absolute inset-0 z-0 pointer-events-none"
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 mb-12 sm:mb-16">
+        <h2 className="text-sm font-semibold tracking-widest text-zinc-500 uppercase mb-4">Nossa Atuação</h2>
+        <h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 drop-shadow-md">
+          Linhas de <span className="bg-gradient-to-r from-[#ff6d00] to-orange-400 bg-clip-text text-transparent">Pesquisa</span>
+        </h3>
+        <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
+          Explore nossas frentes de inovação.
+        </p>
+      </div>
+
+      {/* Marquee exibindo as linhas de pesquisa */}
+      <div className="relative z-10 w-full">
+        <MarqueeResearch onSelectLine={setSelectedLine} />
       </div>
 
       <AnimatePresence>

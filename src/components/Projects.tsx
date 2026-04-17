@@ -1,11 +1,16 @@
 // src/components/Projects.tsx
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Calendar, Users, Award, X, Github, ArrowRight } from 'lucide-react';
+import { FlippingCard } from "@/components/ui/flipping-card";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView, useSpring } from 'framer-motion';
-import { ExternalLink, Calendar, Users, Award, X, Github } from 'lucide-react';
+// Importações para o background de partículas
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
+import type { Engine } from "tsparticles-engine";
 
 // --- Tipagem dos Dados ---
-interface Project {
+export interface Project {
   title: string;
   description: string;
   detailedDescription: string;
@@ -18,7 +23,7 @@ interface Project {
   demo_url?: string;
 }
 
-// NOVO: Dados contextualizados para o LAFI
+// DADOS contextualizados para o LAFI
 const featuredProjects: Project[] = [
   {
     title: "AI Reservoir Characterization",
@@ -68,53 +73,91 @@ const featuredProjects: Project[] = [
 
 // --- Componentes Auxiliares ---
 
-const AnimatedNumber: React.FC<{ value: number }> = ({ value }) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const spring = useSpring(0, { damping: 50, stiffness: 100 });
-
-  useEffect(() => { if (isInView) spring.set(value); }, [spring, isInView, value]);
-  useEffect(() => spring.on("change", (latest) => { if (ref.current) ref.current.textContent = Math.round(latest).toLocaleString('pt-BR'); }), [spring]);
-  
-  return <span ref={ref}>0</span>;
-};
-
-// ALTERADO: Modal reestilizado com nosso padrão
+// Modal Premium
 const Modal: React.FC<{ project: Project, onClose: () => void }> = ({ project, onClose }) => {
     useEffect(() => {
       const handleEsc = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
       window.addEventListener('keydown', handleEsc);
-      return () => window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden'; 
+      
+      return () => {
+        window.removeEventListener('keydown', handleEsc);
+        document.body.style.overflow = 'unset';
+      };
     }, [onClose]);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}/>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
             <motion.div 
-              className="relative z-10 w-full max-w-4xl bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl shadow-orange-500/10 overflow-hidden" 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm" 
+              onClick={onClose} 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+            />
+            
+            <motion.div 
+              // Ajuste Crítico: max-h-[90dvh] para garantir que navegadores móveis não cortem o scroll
+              className="relative z-10 w-full max-w-4xl bg-zinc-950 border border-white/10 rounded-2xl sm:rounded-3xl shadow-[0_0_50px_rgba(255,109,0,0.1)] overflow-hidden flex flex-col max-h-[90dvh]" 
+              initial={{ opacity: 0, scale: 0.95, y: 30 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              drag="y"
-              dragConstraints={{ top: 0, bottom: 200 }}
-              onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
-                <img src={project.image} alt={project.title} className="w-full h-64 object-cover"/>
-                <div className="p-8">
-                    <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-zinc-800/60 text-white hover:bg-orange-500 transition-colors border border-white/10"><X size={20} /></button>
-                    <span className="text-sm font-semibold text-orange-400">{project.category}</span>
-                    <h3 className="text-3xl font-bold text-white mt-2 mb-4">{project.title}</h3>
-                    <p className="text-zinc-300 leading-relaxed mb-6">{project.detailedDescription}</p>
-                    <div className="flex flex-wrap gap-x-6 gap-y-3 text-zinc-300 border-t border-white/10 pt-6">
-                        <div className="flex items-center gap-2"><Award className="w-5 h-5 text-orange-400" /> <strong>Status:</strong> {project.status}</div>
-                        <div className="flex items-center gap-2"><Users className="w-5 h-5 text-orange-400" /> <strong>Equipe:</strong> {project.team} pesquisadores</div>
-                        <div className="flex items-center gap-2"><Calendar className="w-5 h-5 text-orange-400" /> <strong>Duração:</strong> {project.duration}</div>
+                {/* Imagem com proporções adaptativas: h-48 no mobile, h-72 no PC */}
+                <div className="relative w-full h-48 sm:h-72 flex-shrink-0">
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+                  <img src={project.image} alt={project.title} className="w-full h-full object-cover"/>
+                  <button 
+                    onClick={onClose} 
+                    // Ajuste de margem: top-4 right-4 para evitar colisão visual no celular
+                    className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2 sm:p-2.5 rounded-full bg-black/50 text-white hover:bg-[#ff6d00] transition-all duration-300 border border-white/10 hover:border-[#ff6d00] hover:scale-110"
+                  >
+                    <X size={20} strokeWidth={2} />
+                  </button>
+                </div>
+                
+                {/* Conteúdo rolável. Padding otimizado para o celular (p-6) */}
+                <div className="p-6 sm:px-12 sm:pb-12 sm:pt-4 overflow-y-auto custom-scrollbar relative z-20">
+                    <span className="inline-block px-3 py-1 mb-4 text-[10px] sm:text-xs font-bold tracking-wider uppercase text-[#ff6d00] bg-[#ff6d00]/10 border border-[#ff6d00]/20 rounded-full">
+                      {project.category}
+                    </span>
+                    {/* Tipografia adaptativa */}
+                    <h3 className="text-2xl sm:text-4xl font-extrabold text-white mb-4 sm:mb-6 leading-tight pr-6 sm:pr-0">
+                      {project.title}
+                    </h3>
+                    <p className="text-zinc-300 text-base sm:text-lg leading-relaxed font-light mb-6 sm:mb-8">
+                      {project.detailedDescription}
+                    </p>
+                    
+                    {/* Ajuste de Layout: Ao invés de uma coluna no mobile, criamos 2 colunas para melhor aproveitamento do espaço */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 text-zinc-300 border-t border-white/10 pt-6 sm:pt-8">
+                        <div className="flex flex-col gap-1">
+                          <span className="flex items-center gap-1.5 sm:gap-2 text-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wider"><Award size={16} className="text-[#ff6d00] flex-shrink-0" /> Status</span>
+                          <span className="font-medium text-white text-sm sm:text-base">{project.status}</span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="flex items-center gap-1.5 sm:gap-2 text-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wider"><Users size={16} className="text-[#ff6d00] flex-shrink-0" /> Equipe</span>
+                          <span className="font-medium text-white text-sm sm:text-base">{project.team} membros</span>
+                        </div>
+                        <div className="flex flex-col gap-1 col-span-2 sm:col-span-1">
+                          <span className="flex items-center gap-1.5 sm:gap-2 text-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wider"><Calendar size={16} className="text-[#ff6d00] flex-shrink-0" /> Duração</span>
+                          <span className="font-medium text-white text-sm sm:text-base">{project.duration}</span>
+                        </div>
                     </div>
+                    
                     {(project.repo_url || project.demo_url) && (
-                        <div className="flex items-center space-x-4 mt-6">
-                            {project.repo_url && <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-zinc-300 hover:text-orange-300 transition-colors"><Github className="w-4 h-4" /><span>Repositório</span></a>}
-                            {project.demo_url && <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-zinc-300 hover:text-orange-300 transition-colors"><ExternalLink className="w-4 h-4" /><span>Ver Demo</span></a>}
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-white/10">
+                            {project.repo_url && (
+                              <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 border border-white/5 text-white font-medium hover:bg-zinc-800 hover:border-white/10 transition-all duration-300">
+                                <Github className="w-5 h-5" /> Repositório
+                              </a>
+                            )}
+                            {project.demo_url && (
+                              <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ff6d00] text-white font-bold hover:bg-orange-500 transition-all duration-300 shadow-[0_0_20px_rgba(255,109,0,0.3)]">
+                                Ver Demo <ExternalLink className="w-5 h-5" />
+                              </a>
+                            )}
                         </div>
                     )}
                 </div>
@@ -123,87 +166,150 @@ const Modal: React.FC<{ project: Project, onClose: () => void }> = ({ project, o
     );
 };
 
+export const getStatusColor = (status: Project['status']) => {
+  switch (status) {
+    case 'Concluído': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+    case 'Em Desenvolvimento': return 'bg-[#ff6d00]/10 text-[#ff6d00] border-[#ff6d00]/20';
+    case 'Fase de Testes': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+    default: return 'bg-zinc-800 text-zinc-300 border-zinc-700';
+  }
+};
+
+// --- Front do Card ---
+interface GenericCardFrontProps {
+  project: Project;
+}
+
+function GenericCardFront({ project }: GenericCardFrontProps) {
+  return (
+    <div className="flex h-full w-full flex-col bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 group relative">
+      <div className="h-48 sm:h-56 min-h-[12rem] sm:min-h-[14rem] overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent z-10 opacity-90" />
+        <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+        <div className="absolute top-4 left-4 z-20">
+          <span className={`px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border ${getStatusColor(project.status)}`}>
+            {project.status}
+          </span>
+        </div>
+      </div>
+      <div className="p-5 sm:p-8 flex flex-col flex-grow text-left relative z-20 -mt-6 sm:-mt-8 bg-zinc-900 rounded-t-2xl sm:rounded-t-3xl">
+        <span className="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-[#ff6d00] mb-2 line-clamp-1">{project.category}</span>
+        <h3 className="text-xl sm:text-2xl font-extrabold text-white mb-2 sm:mb-3 leading-tight group-hover:text-[#ff6d00] transition-colors duration-300 line-clamp-2">{project.title}</h3>
+        <p className="text-zinc-400 mb-4 sm:mb-6 leading-relaxed text-xs sm:text-sm font-light line-clamp-3">{project.description}</p>
+        
+        <div className="flex items-center justify-between text-xs sm:text-sm text-zinc-500 mt-auto pt-4 border-t border-white/5 font-medium">
+          <div className="flex items-center gap-1.5 sm:gap-2"><Users size={16} /><span>{project.team} membros</span></div>
+          <div className="flex items-center gap-1.5 sm:gap-2"><Calendar size={16} /><span>{project.duration}</span></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// --- Back do Card ---
+interface GenericCardBackProps {
+  project: Project;
+  onClick: () => void;
+}
+
+function GenericCardBack({ project, onClick }: GenericCardBackProps) {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center p-6 sm:p-8 bg-zinc-900 rounded-2xl border border-[#ff6d00]/20 relative overflow-hidden group">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#ff6d00]/10 blur-[50px] rounded-full pointer-events-none" />
+      
+      <Award className="w-12 h-12 sm:w-14 sm:h-14 text-[#ff6d00] mb-4 sm:mb-6 relative z-10" strokeWidth={1.5} />
+      <h3 className="text-xl sm:text-2xl font-extrabold text-white mb-3 sm:mb-4 text-center relative z-10 leading-tight line-clamp-2">{project.title}</h3>
+      <p className="text-zinc-400 text-center text-xs sm:text-sm mb-6 sm:mb-8 leading-relaxed font-light relative z-10 line-clamp-4 px-2">
+        {project.detailedDescription}
+      </p>
+      
+      <button 
+        // e.stopPropagation() é vital no mobile para o tap não flipar o card novamente por acidente antes do modal abrir
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        className="relative z-10 bg-[#ff6d00] hover:bg-orange-500 text-white flex items-center justify-center gap-2 rounded-xl px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold transition-all duration-300 shadow-[0_0_20px_rgba(255,109,0,0.2)] hover:shadow-[0_0_30px_rgba(255,109,0,0.4)] hover:-translate-y-1"
+      >
+        Ver Detalhes completos <ArrowRight size={16} />
+      </button>
+    </div>
+  )
+}
+
 // --- Componente Principal ---
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // ALTERADO: Cores de status alinhadas com nossa paleta
-  const getStatusColor = (status: Project['status']) => {
-    switch (status) {
-      case 'Concluído': return 'bg-zinc-700/50 text-zinc-300 border-zinc-600/50';
-      case 'Em Desenvolvimento': return 'bg-orange-950/80 text-orange-300 border-orange-500/30';
-      case 'Fase de Testes': return 'bg-yellow-950/80 text-yellow-300 border-yellow-500/30';
-    }
-  };
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
+  }, []);
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } } };
+  const particlesOptions = useMemo(() => ({
+    background: { color: { value: 'transparent' } }, 
+    fpsLimit: 45, 
+    interactivity: { 
+        events: { onHover: { enable: true, mode: 'repulse' }, resize: true }, 
+        modes: { repulse: { distance: 100, duration: 0.4 } } 
+    }, 
+    particles: { 
+        color: { value: '#ff6d00' }, 
+        links: { color: '#ff6d00', distance: 150, enable: true, opacity: 0.6, width: 1 }, 
+        collisions: { enable: true }, 
+        move: { direction: 'none' as const, enable: true, outModes: { default: 'bounce' as const }, random: false, speed: 0.3, straight: false }, 
+        number: { density: { enable: true, area: 800 }, value: 40 }, 
+        opacity: { value: 0.8 }, 
+        shape: { type: 'circle' as const }, 
+        size: { value: { min: 1, max: 3 } } 
+    }, 
+    detectRetina: true
+  }), []);
+
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15 } } };
+  const itemVariants = { hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } };
 
   return (
     <>
-      <section id="projects" className="py-24 sm:py-32 bg-zinc-950 text-white relative overflow-hidden">
-        {/* ALTERADO: Fundo atmosférico com blur */}
-        <div 
-          className="absolute inset-0 z-0 bg-black" 
-          aria-hidden="true" 
+      {/* py-24 mantido para espaçamento orgânico de seções */}
+      <section id="projects" className="py-24 sm:py-32 text-white relative overflow-hidden">
+        
+        <Particles
+          id="tsparticles-projects"
+          init={particlesInit}
+          options={particlesOptions}
+          className="absolute inset-0 z-0 pointer-events-none"
         />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div className="text-center mb-16" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={containerVariants}>
-            {/* ALTERADO: Título com nosso gradiente laranja */}
-            <motion.h2 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6" variants={itemVariants}>
-              Projetos em Destaque
-            </motion.h2>
-            <motion.p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto" variants={itemVariants}>
-              Conheça algumas das nossas iniciativas que impulsionam a inovação em geociências.
-            </motion.p>
-          </motion.div>
+          
+          <div className="bg-zinc-900 border border-white/10 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[60%] h-32 bg-[#ff6d00]/5 blur-[100px] rounded-full pointer-events-none" />
 
-          <motion.div className="grid lg:grid-cols-2 gap-8 mb-20" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={containerVariants}>
-            {featuredProjects.map((project, index) => (
-              // ALTERADO: Card com nosso padrão visual
-              <motion.button key={project.title} onClick={() => setSelectedProject(project)} custom={index} variants={itemVariants} className="text-left bg-zinc-900/70 rounded-xl overflow-hidden group border border-orange-600/20 transition-all duration-300 hover:border-orange-500/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 backdrop-blur-sm">
-                <div className="h-48 overflow-hidden relative">
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-                  <div className="absolute top-4 left-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(project.status)}`}>
-                      {project.status}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <span className="text-sm text-orange-400 font-semibold">{project.category}</span>
-                  <h3 className="text-2xl font-bold text-white mt-2 mb-3">{project.title}</h3>
-                  <p className="text-zinc-400 mb-6 leading-relaxed text-sm line-clamp-2">{project.description}</p>
-                  <div className="flex items-center justify-between text-xs text-zinc-400">
-                    <div className="flex items-center gap-1.5"><Users className="w-4 h-4" /><span>{project.team} pesquisadores</span></div>
-                    <div className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /><span>{project.duration}</span></div>
-                  </div>
-                </div>
-              </motion.button>
-            ))}
-          </motion.div>
+            <motion.div className="text-center mb-10 sm:mb-16 relative z-20" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={containerVariants}>
+              <motion.h2 className="text-sm font-semibold tracking-widest text-zinc-500 uppercase mb-4" variants={itemVariants}>
+                Portfólio LAFI
+              </motion.h2>
+              <motion.h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 sm:mb-6" variants={itemVariants}>
+                Projetos em <span className="bg-gradient-to-r from-[#ff6d00] to-orange-400 bg-clip-text text-transparent">Destaque</span>
+              </motion.h3>
+              <motion.p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed" variants={itemVariants}>
+                Conheça algumas das nossas iniciativas que impulsionam a inovação integrando IA, estatística e geociências.
+              </motion.p>
+            </motion.div>
 
-          {/* ALTERADO: Painel de impacto com nosso padrão visual */}
-          <motion.div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-800 to-zinc-900/50 border border-white/10 p-10 rounded-2xl text-center" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7, ease: 'easeOut' }}>
-            <Award className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold text-white mb-4">Reconhecimento e Impacto</h3>
-            <p className="text-lg text-zinc-300 mb-8 max-w-2xl mx-auto">Nossos projetos consolidam nossa posição como referência em inovação.</p>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-4xl font-bold text-orange-400 mb-2"><AnimatedNumber value={40} />+</div>
-                <div className="text-zinc-400">Publicações</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-orange-400 mb-2"><AnimatedNumber value={15} />+</div>
-                <div className="text-zinc-400">Projetos Ativos</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-orange-400 mb-2"><AnimatedNumber value={8} />+</div>
-                <div className="text-zinc-400">Colaborações Industriais</div>
-              </div>
-            </div>
-          </motion.div>
+            <motion.div className="grid lg:grid-cols-2 gap-6 sm:gap-8 relative z-20" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={containerVariants}>
+              {featuredProjects.map((project, index) => (
+                // Ajuste Crítico de Altura: h-[420px] evita telas ocupadas inteiramente pelo card no celular
+                <motion.div key={project.title} custom={index} variants={itemVariants} className="w-full h-[420px] sm:h-[480px]">
+                  <FlippingCard
+                    frontContent={<GenericCardFront project={project} />}
+                    backContent={<GenericCardBack project={project} onClick={() => setSelectedProject(project)} />}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+
+          </div>
         </div>
       </section>
 

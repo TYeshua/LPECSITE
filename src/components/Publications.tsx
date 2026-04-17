@@ -1,8 +1,13 @@
 // src/components/Publications.tsx
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView, useSpring } from 'framer-motion';
-import { BookOpen, Download, ExternalLink, TrendingUp, Users, X, Cpu, Layers } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BookOpen, Download, ExternalLink, TrendingUp, X, ArrowRight } from 'lucide-react';
+
+// Importações para o background de partículas
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
+import type { Engine } from "tsparticles-engine";
 
 // --- Tipagem dos Dados ---
 interface Publication {
@@ -16,7 +21,7 @@ interface Publication {
   abstract: string;
 }
 
-// NOVO: Dados contextualizados para o LAFI
+// Dados contextualizados para o LAFI
 const recentPublications: Publication[] = [
     { 
       title: "Deep Learning for Seismic Facies Classification in Pre-Salt Reservoirs", 
@@ -40,58 +45,76 @@ const recentPublications: Publication[] = [
     },
 ];
 
-const publicationStats = [
-  { label: "Publicações Totais", value: 250, icon: <BookOpen size={28} /> },
-  { label: "Citações", value: 3500, icon: <TrendingUp size={28} /> },
-  { label: "Projetos Ativos", value: 15, icon: <Cpu size={28} /> },
-  { label: "Colaborações", value: 85, icon: <Users size={28} /> }
-];
-
-// --- Componentes Auxiliares ---
-
-const AnimatedNumber: React.FC<{ value: number }> = ({ value }) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const spring = useSpring(0, { damping: 40, stiffness: 100 });
-
-  useEffect(() => { if (isInView) spring.set(value); }, [spring, isInView, value]);
-  useEffect(() => spring.on("change", (latest) => { if (ref.current) ref.current.textContent = Math.round(latest).toLocaleString('pt-BR'); }), [spring]);
-  
-  return <span ref={ref}>0</span>;
-};
-
-// ALTERADO: Modal com nosso padrão visual
+// --- Componente do Modal ---
 const Modal: React.FC<{ pub: Publication, onClose: () => void }> = ({ pub, onClose }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    document.body.style.overflow = 'hidden'; 
+    
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}/>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       <motion.div 
-        className="relative z-10 w-full max-w-3xl bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl shadow-orange-500/10 overflow-hidden" 
-        initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+        className="absolute inset-0 bg-black/90 backdrop-blur-sm" 
+        onClick={onClose} 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }}
+      />
+      
+      <motion.div 
+        // Ajuste Crítico: max-h-[90dvh] garante que o scroll funcione perfeitamente no mobile
+        className="relative z-10 w-full max-w-3xl bg-zinc-950 border border-white/10 rounded-2xl sm:rounded-3xl shadow-[0_0_50px_rgba(255,109,0,0.1)] overflow-hidden flex flex-col max-h-[90dvh]" 
+        initial={{ opacity: 0, scale: 0.95, y: 30 }} 
         animate={{ opacity: 1, scale: 1, y: 0 }} 
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        drag="y" dragConstraints={{ top: 0, bottom: 200 }} onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }}
+        exit={{ opacity: 0, scale: 0.95, y: 30 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <img src={pub.image} alt={`Imagem para ${pub.title}`} className="w-full h-56 object-cover" />
-        <div className="p-8">
-          <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-zinc-800/60 text-white hover:bg-orange-500 transition-colors border border-white/10"><X size={20} /></button>
-          <span className="bg-orange-950/80 text-orange-300 border border-orange-500/30 text-xs font-semibold px-2.5 py-1 rounded-full mb-3 inline-block">{pub.type}</span>
-          <h3 className="text-2xl font-bold text-white mb-3">{pub.title}</h3>
-          <p className="text-sm text-zinc-400 mb-4 italic"><strong>{pub.authors}</strong> - {pub.journal} ({pub.year})</p>
-          <h4 className="font-semibold text-white mb-2">Resumo:</h4>
-          <p className="text-zinc-300 leading-relaxed text-sm max-h-48 overflow-y-auto pr-2">{pub.abstract}</p>
-          <div className="flex items-center justify-between mt-6 border-t border-white/10 pt-4">
-            <span className="flex items-center gap-2 text-sm text-zinc-300"><TrendingUp className="w-4 h-4 text-orange-400" />{pub.citations} citações</span>
-            <div className="flex items-center space-x-4">
-              <a href="#" className="flex items-center gap-1.5 text-sm text-zinc-300 hover:text-orange-300 transition-colors"><Download className="w-4 h-4" /><span>PDF</span></a>
-              <a href="#" className="flex items-center gap-1.5 text-sm text-zinc-300 hover:text-orange-300 transition-colors"><ExternalLink className="w-4 h-4" /><span>Ver Online</span></a>
+        {/* Imagem reduzida no mobile (h-48) para priorizar o título e o resumo */}
+        <div className="relative w-full h-48 sm:h-64 flex-shrink-0">
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent z-10" />
+          <img src={pub.image} alt={pub.title} className="w-full h-full object-cover" />
+          <button 
+            onClick={onClose} 
+            // Posicionamento protegido contra bordas da tela
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2 sm:p-2.5 rounded-full bg-black/50 text-white hover:bg-[#ff6d00] transition-all duration-300 border border-white/10 hover:border-[#ff6d00] hover:scale-110"
+          >
+            <X size={20} strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* Padding ajustado para o mobile (p-5 ou p-6 ao invés de p-8) */}
+        <div className="p-6 sm:px-12 sm:pb-12 sm:pt-4 overflow-y-auto custom-scrollbar relative z-20">
+          <span className="inline-block px-3 py-1 mb-4 text-[10px] sm:text-xs font-bold tracking-wider uppercase text-[#ff6d00] bg-[#ff6d00]/10 border border-[#ff6d00]/20 rounded-full">
+            {pub.type}
+          </span>
+          <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 leading-tight pr-4 sm:pr-0">{pub.title}</h3>
+          <p className="text-xs sm:text-sm text-zinc-400 mb-6 font-medium">
+            <span className="text-zinc-300 italic">{pub.authors}</span> — {pub.journal} ({pub.year})
+          </p>
+          
+          <h4 className="font-bold text-white mb-2 sm:mb-3 text-base sm:text-lg">Resumo</h4>
+          <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-light mb-8">{pub.abstract}</p>
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6 pt-6 border-t border-white/10">
+            <span className="flex items-center justify-center sm:justify-start gap-2 text-sm font-semibold text-zinc-300 bg-zinc-900 px-4 py-2.5 sm:py-2 rounded-lg border border-white/5 w-full sm:w-auto">
+              <TrendingUp className="w-5 h-5 text-[#ff6d00]" />
+              {pub.citations} citações
+            </span>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-zinc-900 border border-white/5 text-white text-sm font-medium hover:bg-zinc-800 hover:border-white/10 transition-all duration-300">
+                <Download className="w-4 h-4" /> PDF
+              </button>
+              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-[#ff6d00] text-white text-sm font-bold hover:bg-orange-500 transition-all duration-300 shadow-[0_0_15px_rgba(255,109,0,0.3)]">
+                <ExternalLink className="w-4 h-4" /> Ver Online
+              </button>
             </div>
           </div>
         </div>
@@ -104,75 +127,120 @@ const Modal: React.FC<{ pub: Publication, onClose: () => void }> = ({ pub, onClo
 const Publications = () => {
   const [selectedPub, setSelectedPub] = useState<Publication | null>(null);
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } } };
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
+  }, []);
+
+  const particlesOptions = useMemo(() => ({
+    background: { color: { value: 'transparent' } }, 
+    fpsLimit: 45, 
+    interactivity: { 
+        events: { onHover: { enable: true, mode: 'repulse' }, resize: true }, 
+        modes: { repulse: { distance: 100, duration: 0.4 } } 
+    }, 
+    particles: { 
+        color: { value: '#ff6d00' }, 
+        links: { color: '#ff6d00', distance: 150, enable: true, opacity: 0.6, width: 1 }, 
+        collisions: { enable: true }, 
+        move: { direction: 'none' as const, enable: true, outModes: { default: 'bounce' as const }, random: false, speed: 0.3, straight: false }, 
+        number: { density: { enable: true, area: 800 }, value: 40 }, 
+        opacity: { value: 0.8 }, 
+        shape: { type: 'circle' as const }, 
+        size: { value: { min: 1, max: 3 } } 
+    }, 
+    detectRetina: true
+  }), []);
+
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15 } } };
+  const itemVariants = { hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } };
 
   return (
     <>
-      <section id="publications" className="py-24 sm:py-32 bg-zinc-950 text-white relative overflow-hidden">
-        {/* ALTERADO: Fundo com nosso padrão visual */}
-        <div 
-          className="absolute inset-0 z-0 bg-[radial-gradient(circle_farthest-side_at_50%_100%,rgba(255,109,0,0.1),transparent)]" 
-          aria-hidden="true" 
-        />
+      <section id="publications" className="py-24 sm:py-32 text-white relative overflow-hidden">
         
+        <Particles
+          id="tsparticles-publications"
+          init={particlesInit}
+          options={particlesOptions}
+          className="absolute inset-0 z-0 pointer-events-none"
+        />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div className="text-center mb-16" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={containerVariants}>
-            <motion.h2 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6" variants={itemVariants}>
-              Produção Científica
-            </motion.h2>
-            <motion.p className="text-lg sm:text-xl text-zinc-400 max-w-3xl mx-auto" variants={itemVariants}>
-              Nossas contribuições para o avanço da ciência e tecnologia em geociências.
-            </motion.p>
-          </motion.div>
+          
+          {/* Border radius suavizado para 2rem no mobile */}
+          <div className="bg-zinc-900 border border-white/10 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-1/4 w-[50%] h-32 bg-[#ff6d00]/5 blur-[100px] rounded-full pointer-events-none" />
 
-          {/* ALTERADO: Cards de estatísticas com nosso padrão visual */}
-          <motion.div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={containerVariants}>
-            {publicationStats.map((stat, index) => (
-              <motion.div key={index} variants={itemVariants} className="bg-zinc-900/70 border border-orange-600/20 rounded-2xl p-6 text-center backdrop-blur-sm transition-all duration-300 hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10">
-                <div className="w-12 h-12 mx-auto mb-4 bg-orange-950/80 border border-orange-500/30 rounded-lg flex items-center justify-center text-orange-400">
-                  {stat.icon}
-                </div>
-                <div className="text-4xl font-bold text-white mb-1"><AnimatedNumber value={stat.value} />+</div>
-                <div className="text-zinc-400 text-sm">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={containerVariants}>
-            <motion.h3 className="text-3xl font-bold text-white mb-8 text-center" variants={itemVariants}>Publicações Recentes</motion.h3>
-            <div className="space-y-6">
-              {recentPublications.map((pub) => (
-                <motion.button
-                  key={pub.title}
-                  onClick={() => setSelectedPub(pub)}
-                  variants={itemVariants}
-                  className="w-full text-left bg-zinc-900/70 p-4 rounded-xl border border-white/10 transition-all duration-300 hover:bg-zinc-800/50 hover:border-orange-500/50 backdrop-blur-sm group"
-                >
-                  <div className="flex flex-col sm:flex-row gap-6 items-start">
-                    <div className="w-full sm:w-48 h-32 sm:h-auto flex-shrink-0 rounded-lg overflow-hidden">
-                      <img src={pub.image} alt={pub.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    </div>
-                    <div className="flex-grow">
-                      <div className="flex justify-between items-start">
-                        <span className="bg-orange-950/80 text-orange-300 border border-orange-500/30 text-xs font-semibold px-2.5 py-1 rounded-full">{pub.type}</span>
-                        <span className="text-sm text-zinc-400 font-medium">{pub.year}</span>
-                      </div>
-                      <h4 className="text-lg font-semibold text-white mt-3 mb-2 group-hover:text-orange-400 transition-colors">{pub.title}</h4>
-                      <p className="text-sm text-zinc-400 mb-3 italic">{pub.authors} - {pub.journal}</p>
-                      <span className="flex items-center gap-2 text-sm text-zinc-300"><TrendingUp className="w-4 h-4 text-orange-400" />{pub.citations} citações</span>
-                    </div>
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-            <motion.div className="text-center mt-12" variants={itemVariants}>
-              <button className="inline-flex items-center gap-2 px-8 py-3 bg-transparent border-2 border-zinc-700 text-zinc-300 font-semibold rounded-lg hover:border-orange-500 hover:text-white transition-colors duration-300">
-                <BookOpen size={16} />
-                Ver Todas as Publicações
-              </button>
+            <motion.div className="text-center mb-12 sm:mb-16 relative z-20" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={containerVariants}>
+              <motion.h2 className="text-sm font-semibold tracking-widest text-zinc-500 uppercase mb-4" variants={itemVariants}>
+                Biblioteca LAFI
+              </motion.h2>
+              <motion.h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 sm:mb-6" variants={itemVariants}>
+                Produção <span className="bg-gradient-to-r from-[#ff6d00] to-orange-400 bg-clip-text text-transparent">Científica</span>
+              </motion.h3>
+              <motion.p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed" variants={itemVariants}>
+                Nossas contribuições para o avanço da ciência e tecnologia em geociências e ciência de dados.
+              </motion.p>
             </motion.div>
-          </motion.div>
+
+            <motion.div className="max-w-4xl mx-auto relative z-20" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={containerVariants}>
+              <div className="flex items-center justify-center sm:justify-between mb-8">
+                <motion.h4 className="text-xl sm:text-2xl font-bold text-white text-center sm:text-left" variants={itemVariants}>Publicações Recentes</motion.h4>
+              </div>
+
+              <div className="space-y-4 sm:space-y-6">
+                {recentPublications.map((pub, index) => (
+                  <motion.button
+                    key={pub.title}
+                    onClick={() => setSelectedPub(pub)}
+                    variants={itemVariants}
+                    // Redução de padding interno no mobile (p-4 sm:p-5)
+                    className="w-full text-left bg-zinc-950 p-4 sm:p-5 rounded-2xl border border-white/5 transition-all duration-300 hover:bg-zinc-900 hover:border-[#ff6d00]/40 hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(255,109,0,0.15)] group focus:outline-none focus:ring-2 focus:ring-[#ff6d00]/50"
+                  >
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start">
+                      <div className="w-full sm:w-48 h-48 sm:h-36 flex-shrink-0 rounded-xl overflow-hidden relative">
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                        <img src={pub.image} alt={pub.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
+                      </div>
+                      
+                      <div className="flex-grow flex flex-col h-full justify-between py-1 w-full">
+                        <div>
+                          <div className="flex flex-wrap justify-between items-center gap-2 mb-3 mt-2 sm:mt-0">
+                            <span className="bg-[#ff6d00]/10 text-[#ff6d00] border border-[#ff6d00]/20 text-[10px] sm:text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-full">
+                              {pub.type}
+                            </span>
+                            <span className="text-[10px] sm:text-xs font-bold text-zinc-500 bg-black/40 px-3 py-1 rounded-full border border-white/5">
+                              {pub.year}
+                            </span>
+                          </div>
+                          <h4 className="text-lg sm:text-xl font-bold text-white mb-2 leading-snug group-hover:text-[#ff6d00] transition-colors duration-300 line-clamp-2">
+                            {pub.title}
+                          </h4>
+                          <p className="text-xs sm:text-sm text-zinc-400 mb-4 font-light line-clamp-2 sm:line-clamp-1">
+                            <span className="italic">{pub.authors}</span> — {pub.journal}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-500 group-hover:text-zinc-300 transition-colors duration-300 mt-auto">
+                          <TrendingUp className="w-4 h-4 text-[#ff6d00]" />
+                          {pub.citations} citações
+                        </div>
+                      </div>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+              
+              <motion.div className="text-center mt-10 sm:mt-12" variants={itemVariants}>
+                <button className="inline-flex w-full sm:w-auto items-center justify-center gap-3 px-8 py-4 bg-zinc-950 border border-white/10 text-white font-bold rounded-xl hover:border-[#ff6d00] hover:text-[#ff6d00] transition-all duration-300 group shadow-lg hover:shadow-[0_0_20px_rgba(255,109,0,0.15)]">
+                  <BookOpen size={18} className="group-hover:scale-110 transition-transform" />
+                  <span className="text-sm sm:text-base">Explorar Acervo Completo</span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+              </motion.div>
+            </motion.div>
+            
+          </div>
         </div>
       </section>
 
