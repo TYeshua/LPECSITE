@@ -82,7 +82,7 @@ export default function Header() {
             </div>
             <div className="text-left">
               <h1 className="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-[#ff6d00] to-orange-400 bg-clip-text text-transparent tracking-tight">
-                LabIndustrial
+                LabIn
               </h1>
               <p className="text-[10px] sm:text-xs text-zinc-500 font-medium tracking-wide hidden sm:block group-hover:text-zinc-400 transition-colors duration-300">
                 Laboratório de Física Industrial

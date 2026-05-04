@@ -31,7 +31,7 @@ const featuredProjects: Project[] = [
     category: "Data Science & Machine Learning",
     status: "Em Desenvolvimento",
     duration: "12 meses",
-    image: "./public/dados.webp",
+    image: import.meta.env.BASE_URL + "dados.webp",
     repo_url: "#",
     demo_url: "#",
   },

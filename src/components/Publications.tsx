@@ -26,7 +26,7 @@ const recentPublications: Publication[] = [
       authors: "FERREIRA, T. Y. D., MOURA, T. R. S.", 
       year: "2026", 
       type: "Propriedade Intelectual - Registro de Programa de Computador (RPC)",
-      image: "./public/sigma.webp",
+      image: import.meta.env.BASE_URL + "sigma.webp",
       abstract: "Trata-se de uma plataforma web voltada para o fluxo de análise geoquímica de bacias sedimentares, desenvolvida em Python e TypeScript. O software integra três módulos principais: o pré-processamento para padronização e limpeza de dados brutos; a análise automatizada que classifica o querogênio e a maturidade térmica com base em regras clássicas da geoquímica; e a modelagem preditiva, que utiliza Machine Learning (Redes Neurais MLP) para validar a consistência dos dados e gerar predições em tempo real. A ferramenta centraliza processos complexos em uma interface gráfica para tornar a análise geoquímica mais ágil e robusta."
     },
     { 

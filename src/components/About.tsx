@@ -62,7 +62,7 @@ const About: React.FC = () => {
           <h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
             Sobre o{" "}
             <span className="bg-gradient-to-r from-[#ff6d00] to-orange-400 bg-clip-text text-transparent">
-              LabIndustrial
+              LabIn
             </span>
           </h3>
           <p className="text-base sm:text-lg text-zinc-400 font-normal leading-relaxed max-w-lg mx-auto lg:mx-0">

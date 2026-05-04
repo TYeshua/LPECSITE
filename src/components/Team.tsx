@@ -28,18 +28,19 @@ interface Member {
 
 const team = {
   coordenadores: [
-    { name: "Dr. Thiago Rafael S. Moura", role: "Coordenador", specialization: "Física Estatística e Computacional", education: "Doutor em Física Estatística e Computacional", image: import.meta.env.BASE_URL + "TRSM.png", email: "ricardo.o@lafi.com", linkedin: "#", bio: "É graduado, mestre e doutor em Física pela Universidade Federal do Rio Grande do Norte (UFRN). Realizou estágio pós-doutoral em Física Biológica no Departamento de Biofísica da UFRN. Atualmente, é professor de Física na Universidade Federal do Pará (UFPA), no campus de Salinópolis, PA. Desde 2017, lidera o Laboratório de Inovação Interdisciplinar (LabX) e Laboratório de Física Industrial (LAFI) da UFPA e ocupa o cargo de diretor da Faculdade de Física." },
-    { name: "Dr. José Leão de Luna", role: "Vice-Coodenador", specialization: "Geologia", education: "Doutor em Geologia", image: import.meta.env.BASE_URL + "JLUNA.jpeg", email: "juliana.c@lafi.com", linkedin: "#", bio: "Possui graduação em Física pela Universidade Federal do Rio de Janeiro (2008), mestrado em GEOLOGIA pelo Instituto de Geociências - UFRJ (2012) e doutorado em Geologia pela Universidade Federal do Rio de Janeiro (2017). Tem experiência na área de Física, com ênfase em física aplicada a geologia, atuando principalmente nos seguintes temas: geofísica, perfilagem geofísica de poços e petrofísica." },
+    { name: "Dr. Thiago Rafael S. Moura", role: "Coordenador", specialization: "Física Estatística e Computacional", education: "Doutor em Física Estatística e Computacional", image: import.meta.env.BASE_URL + "TRSM.png", email: "trsmoura@ufpa.br", linkedin: "#", bio: "É graduado, mestre e doutor em Física pela Universidade Federal do Rio Grande do Norte (UFRN). Realizou estágio pós-doutoral em Física Biológica no Departamento de Biofísica da UFRN. Atualmente, é professor de Física na Universidade Federal do Pará (UFPA), no campus de Salinópolis, PA. Desde 2017, lidera o Laboratório de Inovação Interdisciplinar (LabX) e Laboratório de Física Industrial (LAFI) da UFPA e ocupa o cargo de diretor da Faculdade de Física." },
+    { name: "Dr. José Leão de Luna", role: "Vice-Coodenador", specialization: "Geologia", education: "Doutor em Geologia", image: import.meta.env.BASE_URL + "JLUNA.jpeg", email: "jose.luna@lafi.com", linkedin: "#", bio: "Possui graduação em Física pela Universidade Federal do Rio de Janeiro (2008), mestrado em GEOLOGIA pelo Instituto de Geociências - UFRJ (2012) e doutorado em Geologia pela Universidade Federal do Rio de Janeiro (2017). Tem experiência na área de Física, com ênfase em física aplicada a geologia, atuando principalmente nos seguintes temas: geofísica, perfilagem geofísica de poços e petrofísica." },
   ],
   pesquisadores: [
     { name: "Daniana de Costa", role: "", specialization: "Doutora em Educação (Educação em Ciências e Matemática)", education: "Filosofia da Linguagem e Modelagem Matemática no Ensino de Ciências", image: import.meta.env.BASE_URL + "daniana.png", email: "mariana@lafi.com", linkedin: "#", bio: "Daniana de Costa é professora efetiva com dedicação exclusiva na UFPA (Campus Salinópolis) e docente permanente do Programa de Pós-Graduação em Docência em Educação em Ciências e Matemáticas (PPGDOC/UFPA). Possui uma sólida trajetória de 16 anos no magistério (Educação Básica e EJA), com passagens pelo ensino superior na UNESP e UEAP. Sua formação é marcadamente interdisciplinar, unindo graduações em Matemática e Pedagogia a um mestrado em Desenvolvimento Regional e doutorado em Educação. Atualmente, integra laboratórios de ponta, como o LabX (Laboratório de Inovação Interdisciplinar) LabIndustrial (Laboratório de Física Industrial) em Salinópolis, e grupos de pesquisa na USP e UFSCar." },
     { name: "Silvério Sirotheau C. Neto", role: "", specialization: "Doutor em Ciência da Computação", education: "Inteligência Computacional Aplicada a Ambientes de Aprendizagem e Ciência de Dados.", image: import.meta.env.BASE_URL + "silverio.png", email: "joao@lafi.com", linkedin: "#", bio: "Silvério Sirotheau é Professor Adjunto da UFPA e atua no programa de pós-graduação PROFNIT, voltado para Propriedade Intelectual e Inovação. Com uma trajetória acadêmica sólida na Ciência da Computação, possui mestrado e doutorado pela própria UFPA e especialização em Gerência de Projetos de Software. Sua carreira é marcada pela aplicação de tecnologias de ponta em dados e inteligência artificial para otimizar processos educacionais e de inovação tecnológica." },
   ],
   colaboradores: [
-    { name: "Thiago Yeshua D. Ferreira", specialization: "Engenharia de Exploração e Produção de Petróleo", education: "Descoberta de Conhecimento em Bases de Dados de Petrofísica de Bacias Brasileiras", image: import.meta.env.BASE_URL + "yeshuanovo.jpeg", email: "Thiagoyeshua01@gma.com", linkedin: "#", bio: "O projeto consiste na aplicação de Ciência de Dados e Big Data sobre o acervo de dados petrofísicos das bacias sedimentares brasileiras, disponibilizados pelo REATE (ANP/CPRM). O trabalho foca em transformar grandes volumes de dados brutos (estruturados e não estruturados) em ativos de valor estratégico para a indústria de energia. Através do uso de ferramentas como Power BI e técnicas de mineração de dados, o projeto busca otimizar a tomada de decisão e a proposição de regras de negócio para a produção de petróleo em território nacional." },
-    { name: "Roberta Canto de Souza", specialization: "Engenharia de Exploração e Produção de Petróleo", education: "Hibridização de Dados e Redes Neurais Profundas para a Gestão de Ativos de Petróleo e Gás.", image: import.meta.env.BASE_URL + "roberta.jpeg", email: "bia@lafi.com", linkedin: "#", bio: "O projeto propõe o desenvolvimento de um Digital Twin (Gêmeo Digital) para a otimização da produção de petróleo em campos offshore, com foco especial no cenário complexo do Pré-Sal brasileiro. O objetivo central é superar a alta latência computacional dos simuladores numéricos tradicionais através do uso de Inteligência Artificial. Ao criar uma réplica virtual de alta fidelidade e resposta rápida, o framework permitirá realizar análises de sensibilidade instantâneas, servindo como uma ferramenta crítica de suporte à decisão para maximizar a eficiência produtiva em tempo real." },
-    { name: "Antônio Ronan Nascimento Da Silva", specialization: "Licenciatura em Física", education: "Estudo computacional da histerese térmica e transições de fase em sistemas de spin via Estatística de Kaniadakis", image: import.meta.env.BASE_URL + "ronan.jpeg", email: "bia@lafi.com", linkedin: "#", bio: "A histerese térmica é fundamental no estudo de transições de fase magnéticas, mas em sistemas complexos e não-extensivos, a estatística de Boltzmann-Gibbs mostra-se insuficiente, exigindo abordagens generalizadas como a estatística de Kaniadakis (kappa-estatística). O uso dessa teoria justifica-se porque materiais reais, como nanoestruturas, frequentemente exibem distribuições de energia em lei de potência (power-law), que a deformação kappa captura naturalmente. Sendo assim, este projeto tem o objetivo de analisar computacionalmente a histerese térmica em um modelo de Ising 2D, focando em quantificar a influência do parâmetro kappa na temperatura crítica (T_c) e na área do laço de histerese. Para isso, a metodologia baseia-se em simulações de Monte Carlo via algoritmo de Metropolis adaptado, onde o fator de Boltzmann é substituído pela probabilidade kappa-exponencial exp kappa(x). A partir da simulação de ciclos de aquecimento e resfriamento, serão extraídas grandezas macroscópicas fundamentais, como magnetização, susceptibilidade, energia e cumulante de Binder. Como conclusão e finalidade computacional, o estudo mapeará como a deformação estatística expande ou contrai as zonas de metaestabilidade, fornecendo um modelo preditivo robusto e preciso para descrever materiais magnéticos desordenados." },
+    { name: "Thiago Yeshua", specialization: "Engenharia de Exploração e Produção de Petróleo", education: "Descoberta de Conhecimento em Bases de Dados de Petrofísica de Bacias Brasileiras", image: import.meta.env.BASE_URL + "yeshuanovo.jpeg", email: "Thiagoyeshua01@gmail.com", linkedin: "https://www.linkedin.com/in/thiagoyeshua", bio: "O projeto consiste na aplicação de Ciência de Dados e Big Data sobre o acervo de dados petrofísicos das bacias sedimentares brasileiras, disponibilizados pelo REATE (ANP/CPRM). O trabalho foca em transformar grandes volumes de dados brutos (estruturados e não estruturados) em ativos de valor estratégico para a indústria de energia. Através do uso de ferramentas como Power BI e técnicas de mineração de dados, o projeto busca otimizar a tomada de decisão e a proposição de regras de negócio para a produção de petróleo em território nacional." },
+    { name: "Roberta Souza", specialization: "Engenharia de Exploração e Produção de Petróleo", education: "Hibridização de Dados e Redes Neurais Profundas para a Gestão de Ativos de Petróleo e Gás.", image: import.meta.env.BASE_URL + "roberta.jpeg", email: "bia@lafi.com", linkedin: "#", bio: "O projeto propõe o desenvolvimento de um Digital Twin (Gêmeo Digital) para a otimização da produção de petróleo em campos offshore, com foco especial no cenário complexo do Pré-Sal brasileiro. O objetivo central é superar a alta latência computacional dos simuladores numéricos tradicionais através do uso de Inteligência Artificial. Ao criar uma réplica virtual de alta fidelidade e resposta rápida, o framework permitirá realizar análises de sensibilidade instantâneas, servindo como uma ferramenta crítica de suporte à decisão para maximizar a eficiência produtiva em tempo real." },
+    { name: "Antônio Silva", specialization: "Licenciatura em Física", education: "Estudo computacional da histerese térmica e transições de fase em sistemas de spin via Estatística de Kaniadakis", image: import.meta.env.BASE_URL + "ronan.jpeg", email: "bia@lafi.com", linkedin: "#", bio: "A histerese térmica é fundamental no estudo de transições de fase magnéticas, mas em sistemas complexos e não-extensivos, a estatística de Boltzmann-Gibbs mostra-se insuficiente, exigindo abordagens generalizadas como a estatística de Kaniadakis (kappa-estatística). O uso dessa teoria justifica-se porque materiais reais, como nanoestruturas, frequentemente exibem distribuições de energia em lei de potência (power-law), que a deformação kappa captura naturalmente. Sendo assim, este projeto tem o objetivo de analisar computacionalmente a histerese térmica em um modelo de Ising 2D, focando em quantificar a influência do parâmetro kappa na temperatura crítica (T_c) e na área do laço de histerese. Para isso, a metodologia baseia-se em simulações de Monte Carlo via algoritmo de Metropolis adaptado, onde o fator de Boltzmann é substituído pela probabilidade kappa-exponencial exp kappa(x). A partir da simulação de ciclos de aquecimento e resfriamento, serão extraídas grandezas macroscópicas fundamentais, como magnetização, susceptibilidade, energia e cumulante de Binder. Como conclusão e finalidade computacional, o estudo mapeará como a deformação estatística expande ou contrai as zonas de metaestabilidade, fornecendo um modelo preditivo robusto e preciso para descrever materiais magnéticos desordenados." },
     { name: "Douglas Fonseca", specialization: "Licenciatura em Física", education: "Desenvolvimento e aplicação de simulações e jogos digitais para a compreensão de conceitos de mecânica no ensino de Física.", image: import.meta.env.BASE_URL + "douglas.jpeg", email: "bia@lafi.com", linkedin: "#", bio: "Este projeto propõe o desenvolvimento e a aplicação de simulações interativas e jogos digitais para facilitar a compreensão de conceitos abstratos de mecânica, como o movimento retilíneo e as Leis de Newton. Utilizando técnicas de game design e programação computacional, a pesquisa visa transformar equações teóricas em experimentos virtuais concretos e manipuláveis. O objetivo é estruturar sequências didáticas para o Ensino Médio e a graduação, validando, por meio de uma abordagem quali-quantitativa, como a ludicidade e a interatividade auxiliam na superação da aprendizagem mecânica e promovem o protagonismo do aluno na construção do conhecimento científico." },
+    { name: "Moysés Nobre", specialization: "Licenciatura em Física", education: "Deslocamento da Temperatura de Bloqueio em Nanopartículas Ferromagnéticas no Âmbito da Estatística de Kaniadakis", image: import.meta.env.BASE_URL + "moyses.jpeg", email: "bia@lafi.com", linkedin: "#", bio: "O projeto dedica-se ao estudo das propriedades micromagnéticas de materiais nanoestruturados e sistemas de matéria ativa, fundamentando-se no arcabouço teórico da Estatística Generalizada de Kaniadakis. A pesquisa foca na determinação da temperatura de bloqueio, parâmetro essencial que define a transição entre os estados ordenado (bloqueado) e desordenado (superparamagnético) em nanopartículas ferromagnéticas." },
   ],
 };
 
@@ -117,8 +118,26 @@ const MemberDetailModal: React.FC<{ member: Member; onClose: () => void }> = ({ 
               </div>
 
               <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4">
-                {member.email && <a href={`mailto:${member.email}`} className="p-2.5 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 hover:border-[#ff6d00] transition-all duration-300"><Mail size={20} /></a>}
-                {member.linkedin && <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 hover:border-[#ff6d00] transition-all duration-300"><Linkedin size={20} /></a>}
+                {member.email && member.email !== '#' && (
+                  <a 
+                    href={`mailto:${member.email}`} 
+                    className="p-2.5 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 hover:border-[#ff6d00] transition-all duration-300"
+                    title="Enviar E-mail"
+                  >
+                    <Mail size={20} />
+                  </a>
+                )}
+                {member.linkedin && member.linkedin !== '#' && (
+                  <a 
+                    href={member.linkedin.startsWith('http') ? member.linkedin : `https://${member.linkedin}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-2.5 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 hover:border-[#ff6d00] transition-all duration-300"
+                    title="Ver LinkedIn"
+                  >
+                    <Linkedin size={20} />
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -134,18 +153,62 @@ const MemberDetailModal: React.FC<{ member: Member; onClose: () => void }> = ({ 
 };
 
 // Modais simplificados - Mantenha sua implementação real do ContactModal no seu projeto
-const ContactModal: React.FC<{ member: Member; onClose: () => void }> = ({ member, onClose }) => {
-  return null; 
+const ContactModal: React.FC<{ member: Member; onClose: () => void }> = ({ onClose }) => {
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handleEsc);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md">
+      <motion.div className="absolute inset-0 bg-black/80" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+      <motion.div
+        className="relative z-10 w-full max-w-lg bg-zinc-950 border border-white/10 rounded-3xl p-8 sm:p-10 shadow-[0_0_50px_rgba(255,109,0,0.2)]"
+        initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
+      >
+        <button onClick={onClose} className="absolute top-6 right-6 p-2 rounded-full bg-zinc-900 text-zinc-400 hover:text-white transition-colors">
+          <X size={20} />
+        </button>
+
+        <div className="text-center">
+          <div className="w-16 h-16 bg-[#ff6d00]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-[#ff6d00]/20">
+            <User size={32} className="text-[#ff6d00]" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">Junte-se ao LAFI</h3>
+          <p className="text-zinc-400 text-sm mb-8">
+            Interessado em colaborar ou fazer parte da nossa equipe? Entre em contato conosco.
+          </p>
+          
+          <div className="space-y-4">
+            <a 
+              href="mailto:trsmoura@ufpa.br" 
+              className="flex items-center justify-center gap-3 w-full py-4 bg-[#ff6d00] text-white font-bold rounded-xl hover:bg-orange-500 transition-all shadow-lg shadow-orange-500/20"
+            >
+              <Mail size={20} />
+              Enviar E-mail para Coordenação
+            </a>
+            <p className="text-zinc-500 text-xs">
+              Ou visite-nos no Laboratório de Física Industrial da UFPA.
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
 };
 
 // --- Cards Hierarquizados ---
 
 // Card Premium para Coordenadores
 const CoordinatorCard: React.FC<{ member: Member; onClick: () => void }> = ({ member, onClick }) => (
-  <motion.button
+  <motion.div
     onClick={onClick}
-    // Ajuste: p-6 e rounded-2xl no mobile
-    className="group relative bg-zinc-950/80 backdrop-blur-sm border border-white/10 rounded-2xl sm:rounded-[2rem] p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left transition-all duration-500 w-full hover:bg-zinc-900/90 hover:border-[#ff6d00]/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(255,109,0,0.2)] focus:outline-none"
+    className="group relative bg-zinc-950/80 backdrop-blur-sm border border-white/10 rounded-2xl sm:rounded-[2rem] p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left transition-all duration-500 w-full hover:bg-zinc-900/90 hover:border-[#ff6d00]/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(255,109,0,0.2)] cursor-pointer"
   >
     <div className="absolute top-4 right-4 sm:top-5 sm:right-5 opacity-50 group-hover:opacity-100 transition-opacity duration-300">
       <Award size={20} className="sm:w-6 sm:h-6 text-[#ff6d00]" strokeWidth={1.5} />
@@ -153,28 +216,51 @@ const CoordinatorCard: React.FC<{ member: Member; onClick: () => void }> = ({ me
 
     <div className="relative mb-6 sm:mb-0 sm:mr-8 flex-shrink-0">
       <div className="absolute inset-0 rounded-full bg-[#ff6d00]/20 group-hover:bg-[#ff6d00]/40 blur-xl transition-all duration-500" />
-      {/* Ajuste: Imagem do coordenador ligeiramente reduzida para 32 no mobile */}
       <img src={member.image} alt={member.name} className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover border-2 border-white/20 group-hover:border-[#ff6d00] transition-colors duration-500 shadow-xl" />
     </div>
     
-    <div className="flex flex-col justify-center h-full pt-0 sm:pt-2">
+    <div className="flex flex-col justify-center h-full pt-0 sm:pt-2 w-full">
       <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-[#ff6d00] transition-colors duration-300">{member.name}</h3>
       {member.specialization && <p className="text-[#ff6d00] text-xs sm:text-sm font-bold uppercase tracking-widest mb-3 sm:mb-4">{member.specialization}</p>}
       <p className="text-zinc-400 text-xs sm:text-sm font-light line-clamp-3 mb-5 sm:mb-6 leading-relaxed px-2 sm:px-0">{member.bio}</p>
       
-      <div className="flex items-center gap-2 text-zinc-300 text-[11px] sm:text-xs mt-auto bg-black/40 px-4 py-2 sm:py-2.5 rounded-xl border border-white/5 w-fit mx-auto sm:mx-0">
-        <span className="truncate max-w-[200px] sm:max-w-none">{member.education}</span>
+      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 mt-auto">
+        <div className="flex items-center gap-2 text-zinc-300 text-[11px] sm:text-xs bg-black/40 px-4 py-2 sm:py-2.5 rounded-xl border border-white/5">
+          <span className="truncate max-w-[150px] sm:max-w-none">{member.education}</span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {member.email && member.email !== '#' && (
+            <a 
+              href={`mailto:${member.email}`} 
+              className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 transition-all duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Mail size={16} />
+            </a>
+          )}
+          {member.linkedin && member.linkedin !== '#' && (
+            <a 
+              href={member.linkedin.startsWith('http') ? member.linkedin : `https://${member.linkedin}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 transition-all duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Linkedin size={16} />
+            </a>
+          )}
+        </div>
       </div>
     </div>
-  </motion.button>
+  </motion.div>
 );
 
 // Card Padrão para Pesquisadores e Colaboradores
 const ResearcherCard: React.FC<{ member: Member; onClick: () => void }> = ({ member, onClick }) => (
-  <motion.button
+  <motion.div
     onClick={onClick}
-    // Ajuste: p-6 no mobile para respiro horizontal
-    className="group relative bg-zinc-950/60 backdrop-blur-sm border border-white/5 rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center h-full transition-all duration-500 w-full hover:bg-zinc-900/80 hover:border-[#ff6d00]/40 hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(255,109,0,0.15)] focus:outline-none"
+    className="group relative bg-zinc-950/60 backdrop-blur-sm border border-white/5 rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center h-full transition-all duration-500 w-full hover:bg-zinc-900/80 hover:border-[#ff6d00]/40 hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(255,109,0,0.15)] cursor-pointer"
   >
     <div className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 bg-zinc-900 border border-white/5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-[#ff6d00]/10 group-hover:border-[#ff6d00]/30 transition-all duration-300">
       <Plus size={16} className="text-[#ff6d00]" strokeWidth={2} />
@@ -183,18 +269,41 @@ const ResearcherCard: React.FC<{ member: Member; onClick: () => void }> = ({ mem
     <div className="relative z-10 flex flex-col items-center h-full w-full">
       <div className="relative mb-5 sm:mb-6">
         <div className="absolute inset-0 rounded-full bg-[#ff6d00]/0 group-hover:bg-[#ff6d00]/20 blur-md transition-all duration-500" />
-        {/* Imagem do pesquisador com w-28 no celular */}
         <img src={member.image} alt={member.name} className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 border-white/10 group-hover:border-[#ff6d00]/80 transition-colors duration-500" />
       </div>
       
       <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-[#ff6d00] transition-colors duration-300">{member.name}</h3>
       {member.specialization && <p className="text-zinc-500 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-4">{member.specialization}</p>}
       
-      <div className="flex items-start gap-2 text-zinc-400 text-[10px] sm:text-xs mt-auto bg-black/40 px-3 sm:px-4 py-2 rounded-xl border border-white/5 w-full justify-center">
-        <span className="truncate">{member.education}</span>
+      <div className="flex items-center gap-3 mt-auto w-full">
+        <div className="flex-1 text-zinc-400 text-[10px] sm:text-xs bg-black/40 px-3 sm:px-4 py-2 rounded-xl border border-white/5 truncate">
+          {member.education}
+        </div>
+        <div className="flex gap-2">
+          {member.email && member.email !== '#' && (
+            <a 
+              href={`mailto:${member.email}`} 
+              className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 transition-all duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Mail size={14} />
+            </a>
+          )}
+          {member.linkedin && member.linkedin !== '#' && (
+            <a 
+              href={member.linkedin.startsWith('http') ? member.linkedin : `https://${member.linkedin}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-[#ff6d00] border border-white/5 transition-all duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Linkedin size={14} />
+            </a>
+          )}
+        </div>
       </div>
     </div>
-  </motion.button>
+  </motion.div>
 );
 
 // --- Layouts de Seção ---
@@ -345,17 +454,18 @@ const Team = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-[#ff6d00]/10 to-transparent pointer-events-none" />
                 
-                <h3 className="text-2xl sm:text-4xl font-extrabold text-white mb-3 sm:mb-4 relative z-10">Junte-se à Nossa Missão</h3>
+                <h3 className="text-2xl sm:text-4xl font-extrabold text-white mb-3 sm:mb-4 relative z-10">Junte-se a Nós!</h3>
                 <p className="text-zinc-400 text-sm sm:text-lg font-light mb-8 sm:mb-10 max-w-2xl mx-auto relative z-10 leading-relaxed">
-                  Estamos sempre abertos a novas colaborações e talentos que queiram contribuir com a pesquisa e o avanço tecnológico na Amazônia Oriental e no mundo.
+                  Estamos sempre abertos a novas colaborações e talentos que queiram contribuir com a pesquisa e o avanço tecnológico na Indústria e no mundo.
                 </p>
                 <motion.button 
-                  onClick={() => setContactModalOpen(true)}
-                  className="relative z-10 group inline-flex w-full sm:w-auto items-center justify-center space-x-3 px-6 sm:px-8 py-4 bg-[#ff6d00] text-white font-bold rounded-2xl shadow-[0_0_30px_rgba(255,109,0,0.3)] hover:shadow-[0_0_40px_rgba(255,109,0,0.5)] hover:bg-orange-500 transition-all duration-300"
+                  type="button"
+                  onClick={() => window.location.href = 'mailto:trsmoura@ufpa.br'}
+                  className="relative z-20 group inline-flex w-full sm:w-auto items-center justify-center space-x-3 px-6 sm:px-8 py-4 bg-[#ff6d00] text-white font-bold rounded-2xl shadow-[0_0_30px_rgba(255,109,0,0.3)] hover:shadow-[0_0_40px_rgba(255,109,0,0.5)] hover:bg-orange-500 transition-all duration-300 cursor-pointer"
                   whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}
                 >
-                  <User size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm sm:text-base">Explorar Oportunidades</span>
+                  <Mail size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm sm:text-base">Entre em Contato</span>
                 </motion.button>
               </motion.div>
             </motion.div>
