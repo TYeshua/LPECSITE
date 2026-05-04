@@ -28,12 +28,22 @@ export function FlippingCard({
         transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
       >
         {/* Front Face */}
-        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden]">
+        <div 
+          className={cn(
+            "absolute inset-0 w-full h-full [backface-visibility:hidden]",
+            isFlipped ? "z-0" : "z-10"
+          )}
+        >
           {frontContent}
         </div>
         
         {/* Back Face */}
-        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <div 
+          className={cn(
+            "absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)]",
+            isFlipped ? "z-10" : "z-0"
+          )}
+        >
           {backContent}
         </div>
       </motion.div>

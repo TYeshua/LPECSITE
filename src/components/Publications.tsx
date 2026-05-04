@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Download, ExternalLink, TrendingUp, X, ArrowRight } from 'lucide-react';
+import { BookOpen, Download, ExternalLink, X, ArrowRight } from 'lucide-react';
 
 // Importações para o background de partículas
 import Particles from "react-tsparticles";
@@ -13,9 +13,7 @@ import type { Engine } from "tsparticles-engine";
 interface Publication {
   title: string;
   authors: string;
-  journal: string;
   year: string;
-  citations: number;
   type: string;
   image: string;
   abstract: string;
@@ -24,21 +22,17 @@ interface Publication {
 // Dados contextualizados para o LAFI
 const recentPublications: Publication[] = [
     { 
-      title: "Deep Learning for Seismic Facies Classification in Pre-Salt Reservoirs", 
-      authors: "LIMA, J. R., SOUZA, C. F., et al.", 
-      journal: "Geophysics", 
-      year: "2025", 
-      citations: 45, 
-      type: "Artigo de Periódico",
-      image: "https://images.pexels.com/photos/267507/pexels-photo-267507.jpeg?auto=compress&cs=tinysrgb&w=800",
-      abstract: "Este artigo apresenta uma arquitetura de rede neural convolucional (CNN) para a classificação automática de fácies sísmicas em dados do pré-sal. Nosso modelo, treinado com dados sintéticos e validado com dados reais, alcançou uma acurácia de 92%, superando métodos tradicionais e acelerando o processo de interpretação geológica."
+      title: "Sistema Inteligente de Geoquímica e Maturidade - SIGMA", 
+      authors: "FERREIRA, T. Y. D., MOURA, T. R. S.", 
+      year: "2026", 
+      type: "Propriedade Intelectual - Registro de Programa de Computador (RPC)",
+      image: "./public/sigma.webp",
+      abstract: "Trata-se de uma plataforma web voltada para o fluxo de análise geoquímica de bacias sedimentares, desenvolvida em Python e TypeScript. O software integra três módulos principais: o pré-processamento para padronização e limpeza de dados brutos; a análise automatizada que classifica o querogênio e a maturidade térmica com base em regras clássicas da geoquímica; e a modelagem preditiva, que utiliza Machine Learning (Redes Neurais MLP) para validar a consistência dos dados e gerar predições em tempo real. A ferramenta centraliza processos complexos em uma interface gráfica para tornar a análise geoquímica mais ágil e robusta."
     },
     { 
       title: "A Geostatistical Approach to Reservoir Heterogeneity Modeling", 
       authors: "COSTA, M. A., PEREIRA, F. G., et al.", 
-      journal: "SPE Journal", 
       year: "2024", 
-      citations: 32, 
       type: "Artigo de Conferência",
       image: "https://images.pexels.com/photos/7164010/pexels-photo-7164010.jpeg?auto=compress&cs=tinysrgb&w=800",
       abstract: "Apresentamos uma metodologia geoestatística robusta para modelar a heterogeneidade de reservatórios carbonáticos. Utilizando simulação sequencial gaussiana e plurigaussiana, geramos múltiplos cenários de distribuição de porosidade e permeabilidade, fornecendo uma base sólida para a quantificação de incertezas no cálculo de volume de óleo."
@@ -96,17 +90,13 @@ const Modal: React.FC<{ pub: Publication, onClose: () => void }> = ({ pub, onClo
           </span>
           <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 leading-tight pr-4 sm:pr-0">{pub.title}</h3>
           <p className="text-xs sm:text-sm text-zinc-400 mb-6 font-medium">
-            <span className="text-zinc-300 italic">{pub.authors}</span> — {pub.journal} ({pub.year})
+            <span className="text-zinc-300 italic">{pub.authors}</span> ({pub.year})
           </p>
           
           <h4 className="font-bold text-white mb-2 sm:mb-3 text-base sm:text-lg">Resumo</h4>
           <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-light mb-8">{pub.abstract}</p>
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6 pt-6 border-t border-white/10">
-            <span className="flex items-center justify-center sm:justify-start gap-2 text-sm font-semibold text-zinc-300 bg-zinc-900 px-4 py-2.5 sm:py-2 rounded-lg border border-white/5 w-full sm:w-auto">
-              <TrendingUp className="w-5 h-5 text-[#ff6d00]" />
-              {pub.citations} citações
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-5 sm:gap-6 pt-6 border-t border-white/10">
             
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-zinc-900 border border-white/5 text-white text-sm font-medium hover:bg-zinc-800 hover:border-white/10 transition-all duration-300">
@@ -217,16 +207,12 @@ const Publications = () => {
                             {pub.title}
                           </h4>
                           <p className="text-xs sm:text-sm text-zinc-400 mb-4 font-light line-clamp-2 sm:line-clamp-1">
-                            <span className="italic">{pub.authors}</span> — {pub.journal}
+                            <span className="italic">{pub.authors}</span>
                           </p>
                         </div>
                         
-                        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-500 group-hover:text-zinc-300 transition-colors duration-300 mt-auto">
-                          <TrendingUp className="w-4 h-4 text-[#ff6d00]" />
-                          {pub.citations} citações
                         </div>
                       </div>
-                    </div>
                   </motion.button>
                 ))}
               </div>
@@ -241,7 +227,7 @@ const Publications = () => {
             </motion.div>
             
           </div>
-        </div>
+        </div>    
       </section>
 
       <AnimatePresence>

@@ -22,6 +22,18 @@ interface ResearchLine {
 // --- DADOS ---
 const researchLines: ResearchLine[] = [
   {
+    icon: <Scan size={32} strokeWidth={1.5} />,
+    title: "Análise Inteligente e Mineração de Dados Petrofísicos de Bacias Petrolíferas Brasileiras.",
+    description: "Implementação de um pipeline de Ciência de Dados para processar, modelar e visualizar dados públicos da ANP, visando a extração de insights e otimização da produção de hidrocarbonetos.",
+    detailedDescription: "O projeto adota a metodologia clássica de Ciência de Dados dividida em seis etapas: definição do problema, coleta, pré-processamento (limpeza), análise exploratória, modelagem e comunicação. A base científica fundamenta-se nos 5 Vs do Big Data (Volume, Velocidade, Variedade, Veracidade e Valor). Tecnicamente, o trabalho envolve a mineração de dados petrofísicos complexos para identificar padrões de comportamento em bacias terrestres. O desenvolvimento utiliza o Power BI para a criação de Dashboards dinâmicos e modelos de Business Intelligence que permitem a interpretação célere de dados de produção, facilitando a gestão do conhecimento e a eficiência operacional no setor de óleo e gás.",
+  },
+  {
+    icon: <Scaling size={32} strokeWidth={1.5} />,
+    title: "Hibridização de Dados e Redes Neurais Profundas para a Gestão de Ativos de Petróleo e Gás.",
+    description: "Desenvolvimento de um sistema preditivo de baixa latência que utiliza Redes Neurais Profundas e o dataset real 3W da Petrobras para emular a dinâmica de fluxo em reservatórios offshore.",
+    detailedDescription: "A pesquisa fundamenta-se em uma abordagem de aprendizado híbrido, integrando séries temporais operacionais reais (provenientes do dataset 3W da Petrobras) a dados sintéticos gerados por simulações físicas através de Transfer Learning. O núcleo computacional utiliza arquiteturas de Redes Neurais Profundas (DNN) para mapear a topologia do campo e a conectividade entre poços produtores e injetores, tratando o reservatório como um sistema dinâmico interconectado. Diferente dos métodos convencionais, essa técnica permite capturar dependências espaciais complexas e prever o desempenho global do ativo em frações de segundo (high speed-up factor), reduzindo incertezas operacionais e promovendo a transformação digital na indústria de petróleo.",
+  },
+  {
     icon: <Layers size={32} strokeWidth={1.5} />,
     title: "Filosofia da Linguagem e Modelagem Matemática na Formação Docente",
     description: "Investigação dos processos de ensino-aprendizagem de matemática através da filosofia da linguagem, focando na formação de docentes e no uso da modelagem para abordar sustentabilidade e cultura.",
@@ -32,12 +44,6 @@ const researchLines: ResearchLine[] = [
     title: "Inteligência Computacional Aplicada a Ambientes de Aprendizagem e Ciência de Dados.",
     description: "Desenvolvimento de sistemas inteligentes utilizando Machine Learning e Processamento de Linguagem Natural para análise de dados educacionais, mineração de dados e inovação tecnológica.",
     detailedDescription: "A pesquisa foca no uso de algoritmos avançados de Deep Learning e Machine Learning para extrair conhecimento de grandes volumes de dados (Data Mining). O trabalho destaca-se na área de Learning Analytics e Educational Data Mining, onde o objetivo é criar Ambientes Inteligentes de Aprendizagem que entendam e prevejam o comportamento do estudante. Além disso, o pesquisador aplica Processamento de Linguagem Natural (PLN) para automatizar a compreensão de textos e apoiar a transferência de tecnologia e a propriedade intelectual, conectando a computação pura às necessidades práticas de inovação e gestão de projetos.",
-  },
-  {
-    icon: <Scan size={32} strokeWidth={1.5} />,
-    title: "Análise Inteligente e Mineração de Dados Petrofísicos de Bacias Petrolíferas Brasileiras.",
-    description: "Implementação de um pipeline de Ciência de Dados para processar, modelar e visualizar dados públicos da ANP, visando a extração de insights e otimização da produção de hidrocarbonetos.",
-    detailedDescription: "O projeto adota a metodologia clássica de Ciência de Dados dividida em seis etapas: definição do problema, coleta, pré-processamento (limpeza), análise exploratória, modelagem e comunicação. A base científica fundamenta-se nos 5 Vs do Big Data (Volume, Velocidade, Variedade, Veracidade e Valor). Tecnicamente, o trabalho envolve a mineração de dados petrofísicos complexos para identificar padrões de comportamento em bacias terrestres. O desenvolvimento utiliza o Power BI para a criação de Dashboards dinâmicos e modelos de Business Intelligence que permitem a interpretação célere de dados de produção, facilitando a gestão do conhecimento e a eficiência operacional no setor de óleo e gás.",
   },
   {
     icon: <Waves size={32} strokeWidth={1.5} />,
@@ -51,12 +57,6 @@ const researchLines: ResearchLine[] = [
     description: "Criação e validação de jogos e simulações computacionais para o ensino de Leis de Newton e cinemática, visando a transição da memorização para a compreensão conceitual profunda.",
     detailedDescription: "A pesquisa utiliza princípios de Game Design e lógica de programação para modelar fenômenos físicos (como Movimento Retilíneo Uniforme e Variado) em ambientes virtuais. O foco técnico está na tradução de modelos matemáticos em motores de simulação onde o usuário pode alterar variáveis em tempo real e observar os resultados imediatos. A metodologia adota uma abordagem quali-quantitativa, estruturando sequências didáticas que colocam o estudante no centro do processo (protagonismo). O objetivo final é combater a 'aprendizagem mecânica' (decoreba), promovendo uma compreensão intuitiva e concreta das forças e movimentos através da interatividade e de experimentos virtuais que seriam difíceis de reproduzir em laboratórios físicos convencionais.",
   },
-  {
-    icon: <Scaling size={32} strokeWidth={1.5} />,
-    title: "Geomecânica de Reservatórios",
-    description: "Análise da estabilidade de poços e o comportamento mecânico das rochas.",
-    detailedDescription: "Esta linha investiga a interação entre as tensões da terra e as operações de perfuração e produção. O objetivo é prever e prevenir problemas como o colapso de poços, otimizar a fratura hidráulica e entender fenômenos como a compactação do reservatório e a subsidência de superfície.",
-  }
 ];
 
 // --- COMPONENTE DO MODAL ---

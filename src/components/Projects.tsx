@@ -1,7 +1,7 @@
 // src/components/Projects.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Calendar, Users, Award, X, Github, ArrowRight } from 'lucide-react';
+import { ExternalLink, Calendar, Award, X, Github, ArrowRight } from 'lucide-react';
 import { FlippingCard } from "@/components/ui/flipping-card";
 
 // Importações para o background de partículas
@@ -16,7 +16,6 @@ export interface Project {
   detailedDescription: string;
   category: string;
   status: 'Concluído' | 'Em Desenvolvimento' | 'Fase de Testes';
-  team: number;
   duration: string;
   image: string;
   repo_url?: string;
@@ -26,14 +25,13 @@ export interface Project {
 // DADOS contextualizados para o LAFI
 const featuredProjects: Project[] = [
   {
-    title: "AI Reservoir Characterization",
-    description: "Plataforma de IA para otimização da caracterização de reservatórios usando dados sísmicos e de poços.",
-    detailedDescription: "Esta plataforma utiliza redes neurais convolucionais e algoritmos de aprendizado profundo para identificar fácies geológicas, prever porosidade e permeabilidade, reduzindo significativamente o tempo de interpretação e as incertezas do modelo de reservatório.",
-    category: "Inteligência Artificial",
+    title: "Análise Inteligente e Mineração de Dados Petrofísicos de Bacias Petrolíferas Brasileiras",
+    description: "Implementação de um pipeline de Ciência de Dados para processar, modelar e visualizar dados públicos da ANP, visando a extração de insights e otimização da produção de hidrocarbonetos.",
+    detailedDescription: "O projeto adota a metodologia clássica de Ciência de Dados dividida em seis etapas: definição do problema, coleta, pré-processamento (limpeza), análise exploratória, modelagem e comunicação. A base científica fundamenta-se nos 5 Vs do Big Data (Volume, Velocidade, Variedade, Veracidade e Valor). Tecnicamente, o trabalho envolve a mineração de dados petrofísicos complexos para identificar padrões de comportamento em bacias terrestres. O desenvolvimento utiliza o Power BI para a criação de Dashboards dinâmicos e modelos de Business Intelligence que permitem a interpretação célere de dados de produção, facilitando a gestão do conhecimento e a eficiência operacional no setor de óleo e gás.",
+    category: "Data Science & Machine Learning",
     status: "Em Desenvolvimento",
-    team: 8,
-    duration: "24 meses",
-    image: "https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&w=800",
+    duration: "12 meses",
+    image: "./public/dados.webp",
     repo_url: "#",
     demo_url: "#",
   },
@@ -43,7 +41,6 @@ const featuredProjects: Project[] = [
     detailedDescription: "O GeoStatSim é uma ferramenta computacional que implementa algoritmos de simulação sequencial e baseada em objetos para gerar múltiplos cenários equiprováveis da distribuição de propriedades petrofísicas, essencial para a análise de risco e incerteza.",
     category: "Geoestatística & Simulação",
     status: "Fase de Testes",
-    team: 6,
     duration: "18 meses",
     image: "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800",
     repo_url: "#",
@@ -54,7 +51,6 @@ const featuredProjects: Project[] = [
     detailedDescription: "Este portal permite que pesquisadores façam upload, processem e visualizem imagens 3D de microtomografia de rochas. A plataforma calcula automaticamente propriedades como porosidade, tortuosidade e realiza simulações de fluxo em escala de poros.",
     category: "Petrofísica Digital",
     status: "Concluído",
-    team: 5,
     duration: "12 meses",
     image: "https://images.pexels.com/photos/9800029/pexels-photo-9800029.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
@@ -64,7 +60,6 @@ const featuredProjects: Project[] = [
     detailedDescription: "Desenvolvemos um toolkit em Python que implementa métodos de inversão sísmica, desde a pós-empilhamento até a pré-empilhamento simultânea, para transformar dados sísmicos em mapas de propriedades de rocha, como impedância acústica e razão de Poisson.",
     category: "Geofísica Computacional",
     status: "Em Desenvolvimento",
-    team: 10,
     duration: "30 meses",
     image: "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=800",
     repo_url: "#",
@@ -74,7 +69,8 @@ const featuredProjects: Project[] = [
 // --- Componentes Auxiliares ---
 
 // Modal Premium
-const Modal: React.FC<{ project: Project, onClose: () => void }> = ({ project, onClose }) => {
+// Popup de Detalhes do Projeto
+const ProjectPopup: React.FC<{ project: Project, onClose: () => void }> = ({ project, onClose }) => {
     useEffect(() => {
       const handleEsc = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
       window.addEventListener('keydown', handleEsc);
@@ -89,7 +85,7 @@ const Modal: React.FC<{ project: Project, onClose: () => void }> = ({ project, o
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
             <motion.div 
-              className="absolute inset-0 bg-black/90 backdrop-blur-sm" 
+              className="absolute inset-0 bg-black/90 backdrop-blur-md" 
               onClick={onClose} 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
@@ -97,65 +93,61 @@ const Modal: React.FC<{ project: Project, onClose: () => void }> = ({ project, o
             />
             
             <motion.div 
-              // Ajuste Crítico: max-h-[90dvh] para garantir que navegadores móveis não cortem o scroll
-              className="relative z-10 w-full max-w-4xl bg-zinc-950 border border-white/10 rounded-2xl sm:rounded-3xl shadow-[0_0_50px_rgba(255,109,0,0.1)] overflow-hidden flex flex-col max-h-[90dvh]" 
-              initial={{ opacity: 0, scale: 0.95, y: 30 }} 
+              className="relative z-10 w-full max-w-2xl bg-zinc-950 border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(255,109,0,0.15)] overflow-hidden flex flex-col max-h-[85dvh]" 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
-                {/* Imagem com proporções adaptativas: h-48 no mobile, h-72 no PC */}
-                <div className="relative w-full h-48 sm:h-72 flex-shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover"/>
+                {/* Header com Gradiente */}
+                <div className="relative w-full h-32 flex-shrink-0 bg-gradient-to-br from-[#ff6d00]/20 to-zinc-950 border-b border-white/5">
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
                   <button 
                     onClick={onClose} 
-                    // Ajuste de margem: top-4 right-4 para evitar colisão visual no celular
-                    className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2 sm:p-2.5 rounded-full bg-black/50 text-white hover:bg-[#ff6d00] transition-all duration-300 border border-white/10 hover:border-[#ff6d00] hover:scale-110"
+                    className="absolute top-6 right-6 z-20 p-2.5 rounded-full bg-zinc-900/80 text-white hover:bg-[#ff6d00] transition-all duration-300 border border-white/10 hover:border-[#ff6d00] hover:scale-110"
                   >
                     <X size={20} strokeWidth={2} />
                   </button>
-                </div>
-                
-                {/* Conteúdo rolável. Padding otimizado para o celular (p-6) */}
-                <div className="p-6 sm:px-12 sm:pb-12 sm:pt-4 overflow-y-auto custom-scrollbar relative z-20">
-                    <span className="inline-block px-3 py-1 mb-4 text-[10px] sm:text-xs font-bold tracking-wider uppercase text-[#ff6d00] bg-[#ff6d00]/10 border border-[#ff6d00]/20 rounded-full">
+                  <div className="absolute bottom-6 left-8 sm:left-10">
+                    <span className="px-3 py-1 text-[10px] font-bold tracking-wider uppercase text-[#ff6d00] bg-[#ff6d00]/10 border border-[#ff6d00]/20 rounded-full">
                       {project.category}
                     </span>
-                    {/* Tipografia adaptativa */}
-                    <h3 className="text-2xl sm:text-4xl font-extrabold text-white mb-4 sm:mb-6 leading-tight pr-6 sm:pr-0">
+                  </div>
+                </div>
+                
+                {/* Conteúdo do Popup */}
+                <div className="p-8 sm:p-10 overflow-y-auto custom-scrollbar relative z-20">
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-6 leading-tight">
                       {project.title}
                     </h3>
-                    <p className="text-zinc-300 text-base sm:text-lg leading-relaxed font-light mb-6 sm:mb-8">
-                      {project.detailedDescription}
-                    </p>
                     
-                    {/* Ajuste de Layout: Ao invés de uma coluna no mobile, criamos 2 colunas para melhor aproveitamento do espaço */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 text-zinc-300 border-t border-white/10 pt-6 sm:pt-8">
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-zinc-300 text-base sm:text-lg leading-relaxed font-light mb-8 whitespace-pre-wrap">
+                        {project.detailedDescription}
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 text-zinc-300 border-t border-white/10 pt-8 mt-4">
                         <div className="flex flex-col gap-1">
-                          <span className="flex items-center gap-1.5 sm:gap-2 text-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wider"><Award size={16} className="text-[#ff6d00] flex-shrink-0" /> Status</span>
+                          <span className="flex items-center gap-1.5 text-zinc-500 text-[10px] font-bold uppercase tracking-widest"><Award size={14} className="text-[#ff6d00]" /> Status</span>
                           <span className="font-medium text-white text-sm sm:text-base">{project.status}</span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="flex items-center gap-1.5 sm:gap-2 text-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wider"><Users size={16} className="text-[#ff6d00] flex-shrink-0" /> Equipe</span>
-                          <span className="font-medium text-white text-sm sm:text-base">{project.team} membros</span>
-                        </div>
-                        <div className="flex flex-col gap-1 col-span-2 sm:col-span-1">
-                          <span className="flex items-center gap-1.5 sm:gap-2 text-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wider"><Calendar size={16} className="text-[#ff6d00] flex-shrink-0" /> Duração</span>
+                          <span className="flex items-center gap-1.5 text-zinc-500 text-[10px] font-bold uppercase tracking-widest"><Calendar size={14} className="text-[#ff6d00]" /> Duração</span>
                           <span className="font-medium text-white text-sm sm:text-base">{project.duration}</span>
                         </div>
                     </div>
                     
                     {(project.repo_url || project.demo_url) && (
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-white/10">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-8 pt-8 border-t border-white/10">
                             {project.repo_url && (
-                              <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 border border-white/5 text-white font-medium hover:bg-zinc-800 hover:border-white/10 transition-all duration-300">
-                                <Github className="w-5 h-5" /> Repositório
+                              <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 border border-white/5 text-white text-sm font-medium hover:bg-zinc-800 transition-all duration-300">
+                                <Github className="w-4 h-4" /> Repositório
                               </a>
                             )}
                             {project.demo_url && (
-                              <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ff6d00] text-white font-bold hover:bg-orange-500 transition-all duration-300 shadow-[0_0_20px_rgba(255,109,0,0.3)]">
-                                Ver Demo <ExternalLink className="w-5 h-5" />
+                              <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ff6d00] text-white text-sm font-bold hover:bg-orange-500 transition-all duration-300 shadow-[0_0_20px_rgba(255,109,0,0.2)]">
+                                Ver Demo <ExternalLink className="w-4 h-4" />
                               </a>
                             )}
                         </div>
@@ -198,7 +190,6 @@ function GenericCardFront({ project }: GenericCardFrontProps) {
         <p className="text-zinc-400 mb-4 sm:mb-6 leading-relaxed text-xs sm:text-sm font-light line-clamp-3">{project.description}</p>
         
         <div className="flex items-center justify-between text-xs sm:text-sm text-zinc-500 mt-auto pt-4 border-t border-white/5 font-medium">
-          <div className="flex items-center gap-1.5 sm:gap-2"><Users size={16} /><span>{project.team} membros</span></div>
           <div className="flex items-center gap-1.5 sm:gap-2"><Calendar size={16} /><span>{project.duration}</span></div>
         </div>
       </div>
@@ -214,24 +205,24 @@ interface GenericCardBackProps {
 
 function GenericCardBack({ project, onClick }: GenericCardBackProps) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center p-6 sm:p-8 bg-zinc-900 rounded-2xl border border-[#ff6d00]/20 relative overflow-hidden group">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#ff6d00]/10 blur-[50px] rounded-full pointer-events-none" />
+    <div className="flex h-full w-full flex-col items-center justify-center p-8 bg-zinc-950 rounded-2xl border border-[#ff6d00]/30 relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#ff6d00]/10 to-transparent pointer-events-none" />
       
-      <Award className="w-12 h-12 sm:w-14 sm:h-14 text-[#ff6d00] mb-4 sm:mb-6 relative z-10" strokeWidth={1.5} />
-      <h3 className="text-xl sm:text-2xl font-extrabold text-white mb-3 sm:mb-4 text-center relative z-10 leading-tight line-clamp-2">{project.title}</h3>
-      <p className="text-zinc-400 text-center text-xs sm:text-sm mb-6 sm:mb-8 leading-relaxed font-light relative z-10 line-clamp-4 px-2">
-        {project.detailedDescription}
+      <Award className="w-16 h-16 text-[#ff6d00] mb-6 relative z-10 opacity-80" strokeWidth={1} />
+      <h3 className="text-xl sm:text-2xl font-bold text-white mb-6 text-center relative z-10 leading-tight px-4">{project.title}</h3>
+      
+      <p className="text-zinc-500 text-center text-xs mb-8 font-medium uppercase tracking-widest relative z-10">
+        Explorar documentação e detalhes do projeto
       </p>
       
       <button 
-        // e.stopPropagation() é vital no mobile para o tap não flipar o card novamente por acidente antes do modal abrir
         onClick={(e) => {
           e.stopPropagation();
           onClick();
         }}
-        className="relative z-10 bg-[#ff6d00] hover:bg-orange-500 text-white flex items-center justify-center gap-2 rounded-xl px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold transition-all duration-300 shadow-[0_0_20px_rgba(255,109,0,0.2)] hover:shadow-[0_0_30px_rgba(255,109,0,0.4)] hover:-translate-y-1"
+        className="relative z-50 pointer-events-auto bg-[#ff6d00] hover:bg-orange-500 text-white flex items-center justify-center gap-3 rounded-xl px-8 py-4 text-sm font-bold transition-all duration-300 shadow-[0_0_30px_rgba(255,109,0,0.3)] hover:shadow-[0_0_40px_rgba(255,109,0,0.5)] hover:-translate-y-1 active:scale-95"
       >
-        Ver Detalhes completos <ArrowRight size={16} />
+        Ver detalhes completos <ArrowRight size={18} />
       </button>
     </div>
   )
@@ -314,7 +305,7 @@ const Projects = () => {
       </section>
 
       <AnimatePresence>
-        {selectedProject && <Modal project={selectedProject} onClose={() => setSelectedProject(null)} />}
+        {selectedProject && <ProjectPopup project={selectedProject} onClose={() => setSelectedProject(null)} />}
       </AnimatePresence>
     </>
   );
