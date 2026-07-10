@@ -7,10 +7,20 @@ import React, {
   ReactNode,
   RefObject,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef
 } from 'react';
 import gsap from 'gsap';
+
+export interface CardSwapHandle {
+  /** Bring a specific card index to the front immediately via GSAP */
+  swapTo: (targetIndex: number) => void;
+  /** Advance one card forward (same as auto-swap) */
+  swapNext: () => void;
+  /** Bring the previous card to the front */
+  swapPrev: () => void;
+}
 
 export interface CardSwapProps {
   width?: number | string;
@@ -20,6 +30,8 @@ export interface CardSwapProps {
   delay?: number;
   pauseOnHover?: boolean;
   onCardClick?: (idx: number) => void;
+  /** Called whenever a new card reaches the front position */
+  onFrontChange?: (frontIndex: number) => void;
   skewAmount?: number;
   easing?: 'linear' | 'elastic';
   children: ReactNode;
@@ -66,7 +78,7 @@ const placeNow = (el: HTMLElement, slot: Slot, skew: number) =>
     force3D: true
   });
 
-const CardSwap: React.FC<CardSwapProps> = ({
+const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(({
   width = 500,
   height = 400,
   cardDistance = 60,
@@ -74,10 +86,11 @@ const CardSwap: React.FC<CardSwapProps> = ({
   delay = 5000,
   pauseOnHover = false,
   onCardClick,
+  onFrontChange,
   skewAmount = 6,
   easing = 'elastic',
   children
-}) => {
+}, ref) => {
   const config =
     easing === 'elastic'
       ? {
@@ -101,10 +114,14 @@ const CardSwap: React.FC<CardSwapProps> = ({
   const refs = useMemo<CardRef[]>(() => childArr.map(() => React.createRef<HTMLDivElement>()), [childArr.length]);
 
   const order = useRef<number[]>(Array.from({ length: childArr.length }, (_, i) => i));
-
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const intervalRef = useRef<number>(0);
   const container = useRef<HTMLDivElement>(null);
+  const onFrontChangeRef = useRef(onFrontChange);
+  onFrontChangeRef.current = onFrontChange;
+
+  // Core swap function — moves current front card to back
+  const swapRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const total = refs.length;
@@ -165,10 +182,15 @@ const CardSwap: React.FC<CardSwapProps> = ({
 
       tl.call(() => {
         order.current = [...rest, front];
+        // Notify parent which card is now in front (index in childArr, not order slot)
+        onFrontChangeRef.current?.(order.current[0]);
       });
     };
 
+    swapRef.current = swap;
+
     swap();
+    onFrontChangeRef.current?.(order.current[0]);
     intervalRef.current = window.setInterval(swap, delay);
 
     if (pauseOnHover) {
@@ -192,6 +214,57 @@ const CardSwap: React.FC<CardSwapProps> = ({
     return () => clearInterval(intervalRef.current);
   }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing]);
 
+  // ── Imperative API ─────────────────────────────────────────────────────────
+  useImperativeHandle(ref, () => ({
+    swapNext() {
+      // Kill ongoing timeline, do one swap immediately, reset interval
+      tlRef.current?.kill();
+      clearInterval(intervalRef.current);
+      swapRef.current();
+      intervalRef.current = window.setInterval(swapRef.current, delay);
+    },
+
+    swapPrev() {
+      // Rotate order so the last card becomes first, then "swap next" brings it forward
+      if (order.current.length < 2) return;
+      tlRef.current?.kill();
+      clearInterval(intervalRef.current);
+
+      // Immediately snap all cards to positions matching the reversed order
+      const total = refs.length;
+      const last = order.current[order.current.length - 1];
+      order.current = [last, ...order.current.slice(0, -1)];
+      refs.forEach((r, i) => {
+        const slot = makeSlot(order.current.indexOf(i), cardDistance, verticalDistance, total);
+        placeNow(r.current!, slot, skewAmount);
+      });
+      onFrontChangeRef.current?.(order.current[0]);
+
+      intervalRef.current = window.setInterval(swapRef.current, delay);
+    },
+
+    swapTo(targetIndex: number) {
+      if (!order.current.includes(targetIndex)) return;
+      // Rotate order array until targetIndex is at front, snap everything
+      tlRef.current?.kill();
+      clearInterval(intervalRef.current);
+
+      const total = refs.length;
+      while (order.current[0] !== targetIndex) {
+        const [front, ...rest] = order.current;
+        order.current = [...rest, front];
+      }
+      refs.forEach((r, i) => {
+        const pos = order.current.indexOf(i);
+        const slot = makeSlot(pos, cardDistance, verticalDistance, total);
+        placeNow(r.current!, slot, skewAmount);
+      });
+      onFrontChangeRef.current?.(order.current[0]);
+
+      intervalRef.current = window.setInterval(swapRef.current, delay);
+    },
+  }), [cardDistance, verticalDistance, delay, skewAmount]);
+
   const rendered = childArr.map((child, i) =>
     isValidElement<CardProps>(child)
       ? cloneElement(child, {
@@ -209,14 +282,14 @@ const CardSwap: React.FC<CardSwapProps> = ({
   return (
     <div
       ref={container}
-      // CORREÇÃO: Posicionamento adaptativo. Centralizado (top-1/2 left-1/2) no mobile.
-      // Retoma exatamente as posições originais no desktop (lg:bottom-0 lg:right-0 lg:translate...).
       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:top-auto lg:left-auto lg:bottom-0 lg:right-0 transform lg:translate-x-[5%] lg:translate-y-[20%] origin-center lg:origin-bottom-right perspective-[900px] overflow-visible scale-[0.65] sm:scale-[0.80] lg:scale-100"
       style={{ width, height }}
     >
       {rendered}
     </div>
   );
-};
+});
+
+CardSwap.displayName = 'CardSwap';
 
 export default CardSwap;

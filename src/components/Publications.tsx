@@ -17,6 +17,8 @@ interface Publication {
   type: string;
   image: string;
   abstract: string;
+  pdfUrl?: string;
+  onlineUrl?: string;
 }
 
 // Dados contextualizados para o LAFI
@@ -30,12 +32,14 @@ const recentPublications: Publication[] = [
       abstract: "Trata-se de uma plataforma web voltada para o fluxo de análise geoquímica de bacias sedimentares, desenvolvida em Python e TypeScript. O software integra três módulos principais: o pré-processamento para padronização e limpeza de dados brutos; a análise automatizada que classifica o querogênio e a maturidade térmica com base em regras clássicas da geoquímica; e a modelagem preditiva, que utiliza Machine Learning (Redes Neurais MLP) para validar a consistência dos dados e gerar predições em tempo real. A ferramenta centraliza processos complexos em uma interface gráfica para tornar a análise geoquímica mais ágil e robusta."
     },
     { 
-      title: "A Geostatistical Approach to Reservoir Heterogeneity Modeling", 
-      authors: "COSTA, M. A., PEREIRA, F. G., et al.", 
-      year: "2024", 
-      type: "Artigo de Conferência",
-      image: "https://images.pexels.com/photos/7164010/pexels-photo-7164010.jpeg?auto=compress&cs=tinysrgb&w=800",
-      abstract: "Apresentamos uma metodologia geoestatística robusta para modelar a heterogeneidade de reservatórios carbonáticos. Utilizando simulação sequencial gaussiana e plurigaussiana, geramos múltiplos cenários de distribuição de porosidade e permeabilidade, fornecendo uma base sólida para a quantificação de incertezas no cálculo de volume de óleo."
+      title: "Guia Prático de Prompts para Professores", 
+      authors: "Fabrício Luz, Cristiane Ataíde, Thiago Moura", 
+      year: "2026", 
+      type: "Propriedade Intelectual - Registro de Programa de Computador (RPC)",
+      image: import.meta.env.BASE_URL + "prompts.png",
+      abstract: "A Inteligência Artificial como sua aliada no planejamento, atividades e avaliações.",
+      onlineUrl: "https://guia-digital-de-prompts-para-professores.lovable.app/",
+      
     },
 ];
 
@@ -96,17 +100,32 @@ const Modal: React.FC<{ pub: Publication, onClose: () => void }> = ({ pub, onClo
           <h4 className="font-bold text-white mb-2 sm:mb-3 text-base sm:text-lg">Resumo</h4>
           <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-light mb-8">{pub.abstract}</p>
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-5 sm:gap-6 pt-6 border-t border-white/10">
-            
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-zinc-900 border border-white/5 text-white text-sm font-medium hover:bg-zinc-800 hover:border-white/10 transition-all duration-300">
-                <Download className="w-4 h-4" /> PDF
-              </button>
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-[#ff6d00] text-white text-sm font-bold hover:bg-orange-500 transition-all duration-300 shadow-[0_0_15px_rgba(255,109,0,0.3)]">
-                <ExternalLink className="w-4 h-4" /> Ver Online
-              </button>
+          {(pub.pdfUrl || pub.onlineUrl) && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-5 sm:gap-6 pt-6 border-t border-white/10">
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                {pub.pdfUrl && (
+                  <a
+                    href={pub.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-zinc-900 border border-white/5 text-white text-sm font-medium hover:bg-zinc-800 hover:border-white/10 transition-all duration-300"
+                  >
+                    <Download className="w-4 h-4" /> PDF
+                  </a>
+                )}
+                {pub.onlineUrl && (
+                  <a
+                    href={pub.onlineUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl bg-[#ff6d00] text-white text-sm font-bold hover:bg-orange-500 transition-all duration-300 shadow-[0_0_15px_rgba(255,109,0,0.3)]"
+                  >
+                    <ExternalLink className="w-4 h-4" /> Ver Online
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </motion.div>
     </div>
